@@ -21,11 +21,11 @@ impl Vector3d {
         Vector3d { x: self.x/normal, y: self.y/normal, z: self.z/normal }
     }
 
-    pub fn dot(&self, ref other: Vector3d) -> f64 {
+    pub fn dot(&self, other: Vector3d) -> f64 {
         self.x*other.x + self.y*other.y + self.z*other.z
     }
 
-    pub fn cross(&self, ref other: Vector3d) -> Vector3d {
+    pub fn cross(&self, other: Vector3d) -> Vector3d {
         Vector3d {
             x: self.y*other.z - self.z*other.y,
             y: self.z*other.x - self.x*other.z,
@@ -37,16 +37,20 @@ impl Vector3d {
         Vector3d { x: self.x*scale, y: self.y*scale, z: self.z * scale }
     }
 
-    pub fn add(&self, ref other: Vector3d) -> Self {
+    pub fn add(&self, other: Vector3d) -> Self {
         Vector3d { x: self.x+other.x, y: self.y+other.y, z: self.z+other.z }
     }
 
-    pub fn sub(&self, ref other: Vector3d) -> Self {
+    pub fn sub(&self, other: Vector3d) -> Self {
         self.add(other.scale(-1.0))
     }
 
-    pub fn distance(&self, ref other: Vector3d) -> f64 {
-        self.sub(*other).norm()
+    pub fn distance(&self, other: Vector3d) -> f64 {
+        self.sub(other).norm()
+    }
+
+    pub fn reflect(&self, normal: Vector3d) -> Vector3d {
+        self.sub(normal.scale(2.0*self.dot(normal))).unit()
     }
 }
 

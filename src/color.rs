@@ -14,9 +14,17 @@ impl fmt::Display for Color {
 }
 
 impl Color {
+    pub fn gray(brightness: u8) -> Color {
+        Color { r: brightness, g: brightness, b: brightness }
+    }
+
+    pub fn rgb(r: u8, g: u8, b: u8) -> Color {
+        Color { r: r, g: g, b: b }
+    }
+
     pub fn dim(&self, illumination: f64) -> Self {
         if illumination <= 0.0 {
-            return gray(0);
+            return Color::gray(0);
         }
 
         Color {
@@ -25,8 +33,4 @@ impl Color {
             b: ((self.b as f64)*illumination) as u8
         }
     }
-}
-
-pub fn gray(brightness: u8) -> Color {
-    Color { r: brightness, g: brightness, b: brightness }
 }
