@@ -3,6 +3,7 @@ extern crate core;
 
 mod camera;
 mod canvas;
+mod checkerboard;
 mod color;
 mod geometry;
 mod light;
@@ -12,6 +13,7 @@ mod sphere;
 
 use camera::Camera;
 use color::Color;
+use checkerboard::CheckerBoard;
 use light::Light;
 use scene::Scene;
 use sphere::Sphere;
@@ -21,8 +23,9 @@ use geometry::Vector3d;
 fn main() {
     let canvas_size = (500, 500);
     let mut scene = Scene::new();
-    scene.add_light(Light::new(Vector3d::new(5.0, 5.0, 5.0), 1.0))
-        .add_shape(Box::new(Sphere::new(Color::rgb(255, 0, 0))));
+    scene.add_light(Light::new(Vector3d::new(-5.0, 5.0, 5.0), 1.0))
+        .add_shape(Box::new(Sphere::new(Color::rgb(255, 0, 0))))
+        .add_shape(Box::new(CheckerBoard::new(-1.0)));
 
     let mut camera = Camera::new();
     camera.center(Vector3d::new(-2.0, 0.0, 0.0))

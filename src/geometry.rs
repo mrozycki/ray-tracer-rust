@@ -52,6 +52,10 @@ impl Vector3d {
     pub fn reflect(&self, normal: Vector3d) -> Vector3d {
         self.sub(normal.scale(2.0*self.dot(normal))).unit()
     }
+
+    pub fn x(&self) -> f64 { self.x }
+    pub fn y(&self) -> f64 { self.y }
+    pub fn z(&self) -> f64 { self.z }
 }
 
 impl fmt::Display for Vector3d {

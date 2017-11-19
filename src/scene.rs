@@ -35,6 +35,7 @@ impl Scene {
             let ray = camera.ray(x, y);
             let intersection = self.shapes.iter()
                 .flat_map(|shape| shape.intersect(ray).into_iter())
+                .filter(|&(_, position)| camera.sees(position))
                 .min_by(|a, b| closer_intersection(a, b, ray.o));
 
             if let Some((ref shape, point)) = intersection {
@@ -55,7 +56,7 @@ impl Scene {
 }
 
 fn closer_intersection(&(_,a): &(&Shape, Vector3d), &(_,b): &(&Shape, Vector3d), origin: Vector3d) -> Ordering {
-    if origin.distance(a) <= origin.distance(b) {
+    if origin.distance(a) >= origin.distance(b) {
         return Ordering::Greater;
     } else {
         return Ordering::Less;

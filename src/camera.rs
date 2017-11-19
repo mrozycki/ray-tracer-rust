@@ -65,6 +65,10 @@ impl Camera {
         Line3d::new(pixel_center.sub(self.center), pixel_center)
     }
 
+    pub fn sees(&self, position: Vector3d) -> bool {
+        self.direction.dot(position.sub(self.center)) > 0.0
+    }
+
     pub fn get_canvas_size(&self) -> (usize, usize) {
         (self.canvas_width, self.canvas_height)
     }
