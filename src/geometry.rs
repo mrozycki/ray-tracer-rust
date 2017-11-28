@@ -50,7 +50,7 @@ impl Vector3d {
     }
 
     pub fn reflect(&self, normal: Vector3d) -> Vector3d {
-        self.sub(normal.scale(2.0*self.dot(normal))).unit()
+        self.sub(normal.scale(2.0*self.dot(normal)))
     }
 
     pub fn x(&self) -> f64 { self.x }

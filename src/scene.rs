@@ -14,7 +14,7 @@ pub struct Scene {
 
 impl Scene {
     pub fn new() -> Self {
-        Scene { lights: Vec::new(), shapes: Vec::new(), background: Color::gray(128) }
+        Scene { lights: Vec::new(), shapes: Vec::new(), background: Color::gray(0) }
     }
 
     pub fn add_shape<'a>(&'a mut self, shape: Box<Shape>) -> &'a mut Self {
@@ -38,12 +38,13 @@ impl Scene {
                 .filter(|&(_, position)| camera.sees(position))
                 .min_by(|a, b| closer_intersection(a, b, ray.o));
 
-            if let Some((ref shape, point)) = intersection {
-                let normal = shape.normal_at(point);
-                let ambient = shape.ambient_light();
-                let diffuse = calculate_diffuse(point, normal, &self.lights, shape.diffuse_coefficient());
-                let specular = calculate_specular(point, normal, &self.lights, ray.o, shape.specular_coefficient());
-                let total_illumination = calculate_total_illumination(ambient, diffuse, specular);
+            if let Some((shape, point)) = intersection {
+                let total_illumination = self.lights.iter()
+                    .filter(|light| self.shapes.iter()
+                        .filter(|occluding_shape| occluding_shape.uuid() != shape.uuid())
+                        .all(|shape| !shape.occludes(light.center, point)))
+                    .map(|light| calculate_illumination(point, light, shape, camera.get_center()))
+                    .sum();
 
                 if let Some(pixel_color) = canvas.get_mut(x, y) {
                     *pixel_color = shape.color_at(point).dim(total_illumination);
@@ -63,32 +64,18 @@ fn closer_intersection(&(_,a): &(&Shape, Vector3d), &(_,b): &(&Shape, Vector3d),
     }
 }
 
-fn calculate_diffuse(position: Vector3d, normal: Vector3d, lights: &Vec<Light>, diffuse_coeff: f64) -> f64{
-    lights.iter().map(|light: &Light| -> f64 {
-        let light_normal = light.center.sub(position).unit();
-        let diffuse = normal.dot(light_normal) * diffuse_coeff * light.intensity;
-        diffuse
-    }).fold(0.0, |p, a| p+a)
-}
+fn calculate_illumination(position: Vector3d, light: &Light, shape: &Shape, viewer: Vector3d) -> f64 {
+    let unit_to_light = light.center.sub(position).unit();
+    let normal = shape.normal_at(position);
+    let diffuse = normal.dot(unit_to_light) * shape.diffuse_coefficient() * light.intensity;
 
-fn calculate_specular(position: Vector3d, normal: Vector3d, lights: &Vec<Light>, viewer: Vector3d, spectral_coeff: f64) -> f64 {
-    lights.iter().map(|light: &Light| -> f64 {
-        let unit_to_viewer = viewer.sub(position).unit();
-        let direction = light.center.sub(position).unit();
-        let reflection = direction.reflect(normal);
-        let specular = reflection.dot(unit_to_viewer).powi(10) * spectral_coeff * light.intensity;
+    let unit_to_viewer = viewer.sub(position).unit();
+    let reflection = unit_to_light.reflect(normal);
+    let specular = if reflection.dot(unit_to_viewer) > 0.0 {
+        0.0
+    } else {
+        -reflection.dot(unit_to_viewer).powi(5) * shape.specular_coefficient() * light.intensity
+    };
 
-        if normal.dot(direction) < 0.0 { 0.0 } else { specular }
-    }).fold(0.0, |p, a| p+a)
-}
-
-fn calculate_total_illumination(ambient: f64, diffuse: f64, spectral: f64) -> f64 {
-    let raw = ambient + diffuse + spectral;
-    if raw <= 0.0 {
-        return 0.0;
-    } else if raw >= 1.0 {
-        return 1.0;
-    }
-
-    raw
+    diffuse + specular + shape.ambient_light()
 }

@@ -1,5 +1,7 @@
 extern crate core;
+extern crate rand;
 #[macro_use] extern crate itertools;
+extern crate uuid;
 
 mod camera;
 mod canvas;
@@ -21,16 +23,20 @@ use geometry::Vector3d;
 
 
 fn main() {
-    let canvas_size = (500, 500);
+    let canvas_size = (800, 480);
     let mut scene = Scene::new();
-    scene.add_light(Light::new(Vector3d::new(-5.0, 5.0, 5.0), 1.0))
-        .add_shape(Box::new(Sphere::new(Color::rgb(255, 0, 0))))
-        .add_shape(Box::new(CheckerBoard::new(-1.0)));
+    scene
+        .add_light(Light::new(Vector3d::new(-5.0, 5.0, 7.0), 1.0))
+        .add_light(Light::new(Vector3d::new(-5.0, -5.0, 3.0), 0.8))
+        .add_shape(Box::new(CheckerBoard::new(0.0)));
+
+    for _ in 0..200 {
+        scene.add_shape(Box::new(Sphere::random()));
+    }
 
     let mut camera = Camera::new();
-    camera.center(Vector3d::new(-2.0, 0.0, 0.0))
+    camera.center(Vector3d::new(-5.0, 0.0, 2.0))
         .direction(Vector3d::new(1.0, 0.0, 0.0))
-        .up(Vector3d::new(0.0, 0.0, 1.0))
         .canvas_size(canvas_size);
 
     let canvas = scene.render(&camera);
