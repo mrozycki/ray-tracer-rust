@@ -13,32 +13,39 @@ impl Vector3d {
     }
 
     pub fn norm(&self) -> f64 {
-        ((self.x * self.x) + (self.y * self.y) + (self.z * self.z)).sqrt()
+        self.dot(*self).sqrt()
     }
 
     pub fn unit(&self) -> Self {
-        let normal = self.norm();
-        Vector3d { x: self.x/normal, y: self.y/normal, z: self.z/normal }
+        self.scale(1.0 / self.norm())
     }
 
     pub fn dot(&self, other: Vector3d) -> f64 {
-        self.x*other.x + self.y*other.y + self.z*other.z
+        self.x * other.x + self.y * other.y + self.z * other.z
     }
 
     pub fn cross(&self, other: Vector3d) -> Vector3d {
         Vector3d {
-            x: self.y*other.z - self.z*other.y,
-            y: self.z*other.x - self.x*other.z,
-            z: self.x*other.y - self.y*other.x
+            x: self.y * other.z - self.z * other.y,
+            y: self.z * other.x - self.x * other.z,
+            z: self.x * other.y - self.y * other.x,
         }
     }
 
     pub fn scale(&self, scale: f64) -> Self {
-        Vector3d { x: self.x*scale, y: self.y*scale, z: self.z * scale }
+        Vector3d {
+            x: self.x * scale,
+            y: self.y * scale,
+            z: self.z * scale,
+        }
     }
 
     pub fn add(&self, other: Vector3d) -> Self {
-        Vector3d { x: self.x+other.x, y: self.y+other.y, z: self.z+other.z }
+        Vector3d {
+            x: self.x + other.x,
+            y: self.y + other.y,
+            z: self.z + other.z,
+        }
     }
 
     pub fn sub(&self, other: Vector3d) -> Self {
@@ -50,12 +57,18 @@ impl Vector3d {
     }
 
     pub fn reflect(&self, normal: Vector3d) -> Vector3d {
-        self.sub(normal.scale(2.0*self.dot(normal)))
+        self.sub(normal.scale(2.0 * self.dot(normal)))
     }
 
-    pub fn x(&self) -> f64 { self.x }
-    pub fn y(&self) -> f64 { self.y }
-    pub fn z(&self) -> f64 { self.z }
+    pub fn x(&self) -> f64 {
+        self.x
+    }
+    pub fn y(&self) -> f64 {
+        self.y
+    }
+    pub fn z(&self) -> f64 {
+        self.z
+    }
 }
 
 impl fmt::Display for Vector3d {

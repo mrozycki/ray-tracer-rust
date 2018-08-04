@@ -2,17 +2,21 @@ use std::io;
 use std::io::Write;
 
 pub struct ProgressBar {
-    name : String,
-    goal : usize,
-    progress : usize
+    name: String,
+    goal: usize,
+    progress: usize,
 }
 
 impl ProgressBar {
-    pub fn new(name : &str, goal : usize) -> Self {
-        Self { name : String::from(name), goal, progress : 0 }
+    pub fn new(name: &str, goal: usize) -> Self {
+        Self {
+            name: String::from(name),
+            goal,
+            progress: 0,
+        }
     }
 
-    fn percent(&self, progress : usize) -> usize {
+    fn percent(&self, progress: usize) -> usize {
         if progress >= self.goal {
             return 100;
         }

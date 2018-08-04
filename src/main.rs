@@ -1,6 +1,7 @@
 extern crate core;
 extern crate rand;
-#[macro_use] extern crate itertools;
+#[macro_use]
+extern crate itertools;
 extern crate uuid;
 
 mod camera;
@@ -16,11 +17,11 @@ mod sphere;
 
 use camera::Camera;
 use checkerboard::CheckerBoard;
+use geometry::Vector3d;
 use light::Light;
+use progress_bar::ProgressBar;
 use scene::Scene;
 use sphere::Sphere;
-use geometry::Vector3d;
-use progress_bar::ProgressBar;
 
 fn main() {
     let canvas_size = (800, 480);
@@ -30,7 +31,7 @@ fn main() {
         .add_light(Light::new(Vector3d::new(-5.0, -5.0, 3.0), 0.8))
         .add_shape(Box::new(CheckerBoard::new(0.0)));
 
-    const NUMBER_OF_SPHERES : usize = 200;
+    const NUMBER_OF_SPHERES: usize = 200;
     let mut progress_bar = ProgressBar::new("Generating scene", NUMBER_OF_SPHERES);
     for _ in 0..NUMBER_OF_SPHERES {
         scene.add_shape(Box::new(Sphere::random()));
@@ -38,13 +39,13 @@ fn main() {
     }
 
     let mut camera = Camera::new();
-    camera.center(Vector3d::new(-5.0, 0.0, 2.0))
+    camera
+        .center(Vector3d::new(-5.0, 0.0, 2.0))
         .direction(Vector3d::new(1.0, 0.0, 0.0))
         .canvas_size(canvas_size);
 
     let canvas = scene.render(&camera);
 
-    let mut out_file = std::fs::File::create("out.ppm")
-        .expect("Failed to open file");
+    let mut out_file = std::fs::File::create("out.ppm").expect("Failed to open file");
     canvas.save_ppm(&mut out_file);
 }

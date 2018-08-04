@@ -1,16 +1,16 @@
 extern crate rand;
 use color::Color;
 use geometry::{Line3d, Vector3d};
+use rand::distributions::{IndependentSample, Range};
 use shape::Shape;
 use uuid::Uuid;
-use rand::distributions::{IndependentSample, Range};
 
 pub fn solve_quadratic(a: f64, b: f64, c: f64) -> Vec<f64> {
     let mut result = Vec::with_capacity(2);
-    let delta = b*b - 4.0*a*c;
+    let delta = b * b - 4.0 * a * c;
     if delta >= 0f64 {
-        result.push((-b-delta.sqrt())/(2.0*a));
-        result.push((-b+delta.sqrt())/(2.0*a));
+        result.push((-b - delta.sqrt()) / (2.0 * a));
+        result.push((-b + delta.sqrt()) / (2.0 * a));
     }
 
     result
@@ -35,7 +35,7 @@ impl Sphere {
             ambient: 0.0,
             diffuse: 0.5,
             specular: 0.5,
-            uuid: Uuid::new_v4()
+            uuid: Uuid::new_v4(),
         }
     }
 
@@ -45,7 +45,10 @@ impl Sphere {
         let radius = radius_range.ind_sample(&mut rng);
         let position_range_x = Range::new(-2.0, 30.0);
         let position_range_y = Range::new(-10.0, 10.0);
-        let (x, y) = (position_range_x.ind_sample(&mut rng), position_range_y.ind_sample(&mut rng));
+        let (x, y) = (
+            position_range_x.ind_sample(&mut rng),
+            position_range_y.ind_sample(&mut rng),
+        );
 
         Sphere::new(Vector3d::new(x, y, radius), radius, Color::random())
     }
@@ -70,9 +73,19 @@ impl Shape for Sphere {
         position.sub(self.center).unit()
     }
 
-    fn ambient_light(&self) -> f64 { self.ambient }
-    fn diffuse_coefficient(&self) -> f64 { self.diffuse }
-    fn specular_coefficient(&self) -> f64 { self.specular }
+    fn ambient_light(&self) -> f64 {
+        self.ambient
+    }
 
-    fn uuid(&self) -> Uuid { self.uuid }
+    fn diffuse_coefficient(&self) -> f64 {
+        self.diffuse
+    }
+
+    fn specular_coefficient(&self) -> f64 {
+        self.specular
+    }
+
+    fn uuid(&self) -> Uuid {
+        self.uuid
+    }
 }

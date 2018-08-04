@@ -1,11 +1,11 @@
-use core::cmp::Ordering;
-use shape::Shape;
-use light::Light;
+use camera::Camera;
 use canvas::Canvas;
 use color::Color;
-use camera::Camera;
+use core::cmp::Ordering;
 use geometry::*;
+use light::Light;
 use progress_bar::ProgressBar;
+use shape::Shape;
 
 pub struct Scene {
     lights: Vec<Light>,
@@ -15,7 +15,11 @@ pub struct Scene {
 
 impl Scene {
     pub fn new() -> Self {
-        Scene { lights: Vec::new(), shapes: Vec::new(), background: Color::gray(0) }
+        Scene {
+            lights: Vec::new(),
+            shapes: Vec::new(),
+            background: Color::gray(0),
+        }
     }
 
     pub fn add_shape(&mut self, shape: Box<Shape>) -> &mut Self {
@@ -42,9 +46,11 @@ impl Scene {
 
             if let Some((shape, point)) = intersection {
                 let total_illumination = self.lights.iter()
-                    .filter(|light| self.shapes.iter()
-                        .filter(|occluding_shape| occluding_shape.uuid() != shape.uuid())
-                        .all(|shape| !shape.occludes(light.center, point)))
+                    .filter(|light| {
+                        self.shapes.iter()
+                            .filter(|occluding_shape| occluding_shape.uuid() != shape.uuid())
+                            .all(|shape| !shape.occludes(light.center, point))
+                    })
                     .map(|light| calculate_illumination(point, light, shape, camera.get_center()))
                     .sum();
 
@@ -59,7 +65,7 @@ impl Scene {
     }
 }
 
-fn closer_intersection(&(_,a): &(&Shape, Vector3d), &(_,b): &(&Shape, Vector3d), origin: Vector3d) -> Ordering {
+fn closer_intersection(&(_, a): &(&Shape, Vector3d), &(_, b): &(&Shape, Vector3d), origin: Vector3d) -> Ordering {
     if origin.distance(a) >= origin.distance(b) {
         Ordering::Greater
     } else {

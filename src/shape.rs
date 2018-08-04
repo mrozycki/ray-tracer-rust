@@ -1,5 +1,5 @@
-use geometry::{Line3d, Vector3d};
 use color::Color;
+use geometry::{Line3d, Vector3d};
 use uuid::Uuid;
 
 pub trait Shape {
@@ -12,8 +12,8 @@ pub trait Shape {
     fn specular_coefficient(&self) -> f64;
 
     fn occludes(&self, a: Vector3d, b: Vector3d) -> bool {
-        self.intersect(Line3d { o: a, l: b.sub(a).unit() }).iter()
-            .filter(|&&(_,position)| position.sub(a).dot(position.sub(b)) < 0.0)
+        self.intersect(Line3d::new(b.sub(a).unit(), a)).iter()
+            .filter(|&&(_, position)| position.sub(a).dot(position.sub(b)) < 0.0)
             .count() > 0
     }
 

@@ -1,4 +1,4 @@
-use geometry::{Vector3d, Line3d};
+use geometry::{Line3d, Vector3d};
 
 pub struct Camera {
     center: Vector3d,
@@ -36,7 +36,7 @@ impl Camera {
     pub fn canvas_size(&mut self, (canvas_width, canvas_height): (usize, usize)) -> &mut Self {
         self.canvas_width = canvas_width;
         self.canvas_height = canvas_height;
-        self.height = self.width*(canvas_height as f64)/(canvas_width as f64);
+        self.height = self.width * (canvas_height as f64) / (canvas_width as f64);
         self
     }
 
@@ -45,17 +45,20 @@ impl Camera {
 
         let canvas_corner = self.center
             .add(self.direction)
-            .add(self.up_unit.scale(self.height/2.0))
-            .add(left_unit.scale(self.width/2.0));
+            .add(self.up_unit.scale(self.height / 2.0))
+            .add(left_unit.scale(self.width / 2.0));
 
-        let pixel_right = left_unit.scale(-self.width/(self.canvas_width as f64));
-        let pixel_down = self.up_unit.scale(-self.height/(self.canvas_height as f64));
+        let pixel_right = left_unit.scale(-self.width / (self.canvas_width as f64));
+        let pixel_down = self.up_unit
+            .scale(-self.height / (self.canvas_height as f64));
 
         let pixel_corner = canvas_corner
             .add(pixel_right.scale(x as f64))
             .add(pixel_down.scale(y as f64));
 
-        let pixel_center = pixel_corner.add(pixel_right.scale(0.5)).add(pixel_down.scale(0.5));
+        let pixel_center = pixel_corner
+            .add(pixel_right.scale(0.5))
+            .add(pixel_down.scale(0.5));
 
         Line3d::new(pixel_center.sub(self.center), pixel_center)
     }
@@ -68,5 +71,7 @@ impl Camera {
         (self.canvas_width, self.canvas_height)
     }
 
-    pub fn get_center(&self) -> Vector3d { self.center }
+    pub fn get_center(&self) -> Vector3d {
+        self.center
+    }
 }
