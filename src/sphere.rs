@@ -1,7 +1,7 @@
 extern crate rand;
 use color::Color;
 use geometry::{Line3d, Vector3d};
-use rand::distributions::{IndependentSample, Range};
+use rand::distributions::{Distribution, Uniform};
 use shape::Shape;
 use uuid::Uuid;
 
@@ -41,13 +41,13 @@ impl Sphere {
 
     pub fn random() -> Self {
         let mut rng = rand::thread_rng();
-        let radius_range = Range::new(0.1, 0.5);
-        let radius = radius_range.ind_sample(&mut rng);
-        let position_range_x = Range::new(-2.0, 30.0);
-        let position_range_y = Range::new(-10.0, 10.0);
+        let radius_range = Uniform::new(0.1, 0.5);
+        let radius = radius_range.sample(&mut rng);
+        let position_range_x = Uniform::new(-2.0, 30.0);
+        let position_range_y = Uniform::new(-10.0, 10.0);
         let (x, y) = (
-            position_range_x.ind_sample(&mut rng),
-            position_range_y.ind_sample(&mut rng),
+            position_range_x.sample(&mut rng),
+            position_range_y.sample(&mut rng),
         );
 
         Sphere::new(Vector3d::new(x, y, radius), radius, Color::random())
