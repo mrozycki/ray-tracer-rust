@@ -5,7 +5,7 @@ use core::cmp::Ordering;
 use geometry::*;
 use light::Light;
 use progress_bar::ProgressBar;
-use shape::Shape;
+use shapes::Shape;
 
 pub struct Scene {
     lights: Vec<Light>,

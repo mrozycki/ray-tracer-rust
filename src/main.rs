@@ -6,22 +6,19 @@ extern crate uuid;
 
 mod camera;
 mod canvas;
-mod checkerboard;
 mod color;
 mod geometry;
 mod light;
 mod progress_bar;
 mod scene;
-mod shape;
-mod sphere;
+mod shapes;
 
 use camera::Camera;
-use checkerboard::CheckerBoard;
 use geometry::Vector3d;
 use light::Light;
 use progress_bar::ProgressBar;
 use scene::Scene;
-use sphere::Sphere;
+use shapes::{CheckerBoard, Sphere};
 
 fn main() {
     let canvas_size = (800, 480);

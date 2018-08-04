@@ -2,7 +2,7 @@ extern crate rand;
 use color::Color;
 use geometry::{Line3d, Vector3d};
 use rand::distributions::{Distribution, Uniform};
-use shape::Shape;
+use shapes::Shape;
 use uuid::Uuid;
 
 pub fn solve_quadratic(a: f64, b: f64, c: f64) -> Vec<f64> {
