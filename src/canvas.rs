@@ -17,30 +17,19 @@ impl Canvas {
         Canvas { width, height, pixels }
     }
 
-    pub fn get(&self, x: usize, y: usize) -> Option<&Color> {
-        self.pixels.get(y * self.width + x)
-    }
-
     pub fn get_mut(&mut self, x: usize, y: usize) -> Option<&mut Color> {
         self.pixels.get_mut(y * self.width + x)
     }
 
-    pub fn save_ppm(&self, out: &mut io::Write) {
-        out.write_all(b"P3\n").expect("Failed");
-        out.write_fmt(format_args!("{} {}\n", self.width, self.height))
-            .expect("Failed");
-        out.write_all(b"255\n").expect("Failed");
+    pub fn save_pbm(&self, out: &mut io::Write) -> io::Result<()> {
+        try!(out.write_fmt(format_args!("P6 {} {} 255\n", self.width, self.height)));
 
         let mut progress_bar = ProgressBar::new("Saving file", self.width * self.height);
-        for y in 0..self.height {
-            for x in 0..self.width {
-                if let Some(color) = self.get(x, y) {
-                    out.write_fmt(format_args!("{} {} {} ", color.r, color.g, color.b))
-                        .expect("Failed");
-                }
-                progress_bar.step().print();
-            }
-            out.write_all(b"\n").expect("Failed");
+        for color in &self.pixels {
+            try!(out.write_all(&[color.r, color.g, color.b]));
+            progress_bar.step().print();
         }
+
+        Ok(())
     }
 }
