@@ -1,5 +1,6 @@
 use color::Color;
 use std::vec::Vec;
+use std::io;
 
 pub struct Canvas {
     width: usize,
@@ -23,17 +24,18 @@ impl Canvas {
         self.pixels.get_mut(y * self.width + x)
     }
 
-    pub fn print_ppm(self) {
-        println!("P3");
-        println!("{} {}", self.width, self.height);
-        println!("255");
+    pub fn save_ppm(&self, out : &mut io::Write) {
+        out.write_all(b"P3\n").expect("Failed");
+        out.write_fmt(format_args!("{} {}\n", self.width, self.height)).expect("Failed");
+        out.write_all(b"255\n").expect("Failed");
+
         for y in 0..self.height {
             for x in 0..self.width {
                 if let Some(color) = self.get(x, y) {
-                    print!("{} {} {} ", color.r, color.g, color.b);
+                    out.write_fmt(format_args!("{} {} {} ", color.r, color.g, color.b)).expect("Failed");
                 }
             }
-            println!();
+            out.write_all(b"\n").expect("Failed");
         }
     }
 }

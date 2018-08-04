@@ -41,5 +41,7 @@ fn main() {
 
     let canvas = scene.render(&camera);
 
-    canvas.print_ppm();
+    let mut out_file = std::fs::File::create("out.ppm")
+        .expect("Failed to open file");
+    canvas.save_ppm(&mut out_file);
 }
