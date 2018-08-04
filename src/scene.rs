@@ -18,12 +18,12 @@ impl Scene {
         Scene { lights: Vec::new(), shapes: Vec::new(), background: Color::gray(0) }
     }
 
-    pub fn add_shape<'a>(&'a mut self, shape: Box<Shape>) -> &'a mut Self {
+    pub fn add_shape(&mut self, shape: Box<Shape>) -> &mut Self {
         self.shapes.push(shape);
         self
     }
 
-    pub fn add_light<'a>(&'a mut self, light: Light) -> &'a mut Self {
+    pub fn add_light(&mut self, light: Light) -> &mut Self {
         self.lights.push(light);
         self
     }
@@ -61,9 +61,9 @@ impl Scene {
 
 fn closer_intersection(&(_,a): &(&Shape, Vector3d), &(_,b): &(&Shape, Vector3d), origin: Vector3d) -> Ordering {
     if origin.distance(a) >= origin.distance(b) {
-        return Ordering::Greater;
+        Ordering::Greater
     } else {
-        return Ordering::Less;
+        Ordering::Less
     }
 }
 

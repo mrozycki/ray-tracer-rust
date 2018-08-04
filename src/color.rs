@@ -22,7 +22,7 @@ impl Color {
     }
 
     pub fn rgb(r: u8, g: u8, b: u8) -> Color {
-        Color { r: r, g: g, b: b }
+        Color { r, g, b }
     }
 
     pub fn random() -> Color {
@@ -37,9 +37,9 @@ impl Color {
             self.clone()
         } else {
             Color::rgb(
-                ((self.r as f64)*illumination) as u8,
-                ((self.g as f64)*illumination) as u8,
-                ((self.b as f64)*illumination) as u8
+                (f64::from(self.r) * illumination) as u8,
+                (f64::from(self.g) * illumination) as u8,
+                (f64::from(self.b) * illumination) as u8
             )
         }
     }

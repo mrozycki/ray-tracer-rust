@@ -23,17 +23,17 @@ impl Camera {
         }
     }
 
-    pub fn center<'a>(&'a mut self, center: Vector3d) -> &'a mut Camera {
+    pub fn center(&mut self, center: Vector3d) -> &mut Self {
         self.center = center;
         self
     }
 
-    pub fn direction<'a>(&'a mut self, direction: Vector3d) -> &'a mut Camera {
+    pub fn direction(&mut self, direction: Vector3d) -> &mut Self {
         self.direction = direction;
         self
     }
 
-    pub fn canvas_size<'a>(&'a mut self, (canvas_width, canvas_height): (usize, usize)) -> &'a mut Camera {
+    pub fn canvas_size(&mut self, (canvas_width, canvas_height): (usize, usize)) -> &mut Self {
         self.canvas_width = canvas_width;
         self.canvas_height = canvas_height;
         self.height = self.width*(canvas_height as f64)/(canvas_width as f64);

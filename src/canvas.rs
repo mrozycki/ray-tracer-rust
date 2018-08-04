@@ -11,10 +11,10 @@ pub struct Canvas {
 
 impl Canvas {
     pub fn new(width: usize, height: usize, color: Color) -> Canvas {
-        let mut pixels = Vec::with_capacity(width*height);
+        let mut pixels = Vec::with_capacity(width * height);
         pixels.resize(width*height, color);
 
-        Canvas { width: width, height: height, pixels: pixels }
+        Canvas { width, height, pixels }
     }
 
     pub fn get(&self, x: usize, y: usize) -> Option<&Color> {

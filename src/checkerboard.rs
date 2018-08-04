@@ -13,7 +13,7 @@ pub struct CheckerBoard {
 
 impl CheckerBoard {
     pub fn new(height: f64) -> Self {
-        CheckerBoard { height: height, ambient: 0.0, diffuse: 0.6, specular: 0.4, uuid: Uuid::new_v4() }
+        CheckerBoard { height, ambient: 0.0, diffuse: 0.6, specular: 0.4, uuid: Uuid::new_v4() }
     }
 }
 
@@ -22,8 +22,8 @@ impl Shape for CheckerBoard {
         if ray.l.z() == 0.0 {
             return Vec::new();
         }
-        let d = (self.height-ray.o.z())/ray.l.z();
 
+        let d = (self.height-ray.o.z())/ray.l.z();
         vec!((self as &Shape, ray.at(d)))
     }
 

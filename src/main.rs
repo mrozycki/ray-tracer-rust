@@ -15,7 +15,6 @@ mod shape;
 mod sphere;
 
 use camera::Camera;
-use color::Color;
 use checkerboard::CheckerBoard;
 use light::Light;
 use scene::Scene;

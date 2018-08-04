@@ -6,7 +6,7 @@ pub struct Light {
 }
 
 impl Light {
-    pub fn new(ref center: Vector3d, intensity: f64) -> Self {
-        Light { center: *center, intensity: intensity }
+    pub fn new(center: Vector3d, intensity: f64) -> Self {
+        Light { center, intensity }
     }
 }

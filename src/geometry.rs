@@ -9,11 +9,11 @@ pub struct Vector3d {
 
 impl Vector3d {
     pub fn new(x: f64, y: f64, z: f64) -> Self {
-        Vector3d { x: x, y: y, z: z }
+        Vector3d { x, y, z }
     }
 
     pub fn norm(&self) -> f64 {
-        ((self.x*self.x) + (self.y*self.y) + (self.z*self.z)).sqrt()
+        ((self.x * self.x) + (self.y * self.y) + (self.z * self.z)).sqrt()
     }
 
     pub fn unit(&self) -> Self {
@@ -72,7 +72,7 @@ pub struct Line3d {
 
 impl Line3d {
     pub fn new(l: Vector3d, o: Vector3d) -> Line3d {
-        Line3d { l: l.unit(), o: o }
+        Line3d { l: l.unit(), o }
     }
 
     pub fn at(&self, d: f64) -> Vector3d {

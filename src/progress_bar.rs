@@ -20,12 +20,12 @@ impl ProgressBar {
         progress * 100 / self.goal
     }
 
-    pub fn step<'a>(&'a mut self) -> &'a mut Self {
+    pub fn step(&mut self) -> &mut Self {
         self.progress += 1;
         self
     }
 
-    pub fn print<'a>(&'a self) -> &'a Self {
+    pub fn print(&self) -> &Self {
         let percent_progress = self.percent(self.progress);
 
         if self.progress > 0 && self.percent(self.progress) > self.percent(self.progress - 1) {

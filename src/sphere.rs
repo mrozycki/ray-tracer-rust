@@ -3,7 +3,6 @@ use color::Color;
 use geometry::{Line3d, Vector3d};
 use shape::Shape;
 use uuid::Uuid;
-use rand::Rng;
 use rand::distributions::{IndependentSample, Range};
 
 pub fn solve_quadratic(a: f64, b: f64, c: f64) -> Vec<f64> {
@@ -30,9 +29,9 @@ pub struct Sphere {
 impl Sphere {
     pub fn new(center: Vector3d, radius: f64, color: Color) -> Self {
         Sphere {
-            color: color,
-            center: center,
-            radius: radius,
+            color,
+            center,
+            radius,
             ambient: 0.0,
             diffuse: 0.5,
             specular: 0.5,
@@ -48,15 +47,7 @@ impl Sphere {
         let position_range_y = Range::new(-10.0, 10.0);
         let (x, y) = (position_range_x.ind_sample(&mut rng), position_range_y.ind_sample(&mut rng));
 
-        Sphere {
-            color: Color::random(),
-            center: Vector3d::new(x, y, radius),
-            radius: radius,
-            ambient: 0.0,
-            diffuse: 0.5,
-            specular: 0.5,
-            uuid: Uuid::new_v4()
-        }
+        Sphere::new(Vector3d::new(x, y, radius), radius, Color::random())
     }
 }
 
