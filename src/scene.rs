@@ -5,6 +5,7 @@ use canvas::Canvas;
 use color::Color;
 use camera::Camera;
 use geometry::*;
+use progress_bar::ProgressBar;
 
 pub struct Scene {
     lights: Vec<Light>,
@@ -31,6 +32,7 @@ impl Scene {
         let (width, height) = camera.get_canvas_size();
         let mut canvas = Canvas::new(width, height, self.background.clone());
 
+        let mut progress_bar = ProgressBar::new("Rendering", width * height);
         for (x, y) in iproduct!(0..width, 0..height) {
             let ray = camera.ray(x, y);
             let intersection = self.shapes.iter()
@@ -50,6 +52,7 @@ impl Scene {
                     *pixel_color = shape.color_at(point).dim(total_illumination);
                 }
             }
+            progress_bar.step().print();
         }
 
         canvas

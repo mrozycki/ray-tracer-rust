@@ -9,6 +9,7 @@ mod checkerboard;
 mod color;
 mod geometry;
 mod light;
+mod progress_bar;
 mod scene;
 mod shape;
 mod sphere;
@@ -20,7 +21,7 @@ use light::Light;
 use scene::Scene;
 use sphere::Sphere;
 use geometry::Vector3d;
-
+use progress_bar::ProgressBar;
 
 fn main() {
     let canvas_size = (800, 480);
@@ -30,8 +31,11 @@ fn main() {
         .add_light(Light::new(Vector3d::new(-5.0, -5.0, 3.0), 0.8))
         .add_shape(Box::new(CheckerBoard::new(0.0)));
 
-    for _ in 0..200 {
+    const NUMBER_OF_SPHERES : usize = 200;
+    let mut progress_bar = ProgressBar::new("Generating scene", NUMBER_OF_SPHERES);
+    for _ in 0..NUMBER_OF_SPHERES {
         scene.add_shape(Box::new(Sphere::random()));
+        progress_bar.step().print();
     }
 
     let mut camera = Camera::new();

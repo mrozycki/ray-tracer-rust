@@ -1,4 +1,5 @@
 use color::Color;
+use progress_bar::ProgressBar;
 use std::vec::Vec;
 use std::io;
 
@@ -29,11 +30,13 @@ impl Canvas {
         out.write_fmt(format_args!("{} {}\n", self.width, self.height)).expect("Failed");
         out.write_all(b"255\n").expect("Failed");
 
+        let mut progress_bar = ProgressBar::new("Saving file", self.width * self.height);
         for y in 0..self.height {
             for x in 0..self.width {
                 if let Some(color) = self.get(x, y) {
                     out.write_fmt(format_args!("{} {} {} ", color.r, color.g, color.b)).expect("Failed");
                 }
+                progress_bar.step().print();
             }
             out.write_all(b"\n").expect("Failed");
         }
