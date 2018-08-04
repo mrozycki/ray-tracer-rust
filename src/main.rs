@@ -21,7 +21,6 @@ use scene::Scene;
 use shapes::{CheckerBoard, Sphere};
 
 fn main() {
-    let canvas_size = (800, 480);
     let mut scene = Scene::new();
     scene
         .add_light(Light::new(Vector3d::new(-5.0, 5.0, 7.0), 1.0))
@@ -35,13 +34,9 @@ fn main() {
         progress_bar.step().print();
     }
 
-    let mut camera = Camera::new();
-    camera
-        .center(Vector3d::new(-5.0, 0.0, 2.0))
-        .direction(Vector3d::new(1.0, 0.0, 0.0))
-        .canvas_size(canvas_size);
+    let camera = Camera::new(Vector3d::new(-5.0, 0.0, 2.0), Vector3d::new(1.0, 0.0, 0.0));
 
-    let canvas = scene.render(&camera);
+    let canvas = scene.render(&camera, 800, 480);
 
     let mut out_file = std::fs::File::create("out.ppm").expect("Failed to open file");
     canvas.save_pbm(&mut out_file).expect("Failed to write to the file");

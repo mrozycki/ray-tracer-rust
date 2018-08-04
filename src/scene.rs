@@ -32,31 +32,32 @@ impl Scene {
         self
     }
 
-    pub fn render(&self, camera: &Camera) -> Canvas {
-        let (width, height) = camera.get_canvas_size();
+    fn find_intersection(&self, ray : Line3d) -> Option<(&Shape, Vector3d)> {
+        self.shapes.iter()
+            .flat_map(|shape| shape.intersect(ray).into_iter())
+            .filter(|&(_, position)| ray.project(position) > 0.0)
+            .min_by(|a, b| closer_intersection(a, b, ray.o))
+    }
+
+    fn calculate_illumination(&self, shape: &Shape, point: Vector3d, eye: Vector3d) -> f64 {
+        self.lights.iter()
+            .filter(|light| {
+                self.shapes.iter()
+                    .filter(|occluding_shape| occluding_shape.uuid() != shape.uuid())
+                    .all(|shape| !shape.occludes(light.center, point))
+            })
+            .map(|light| calculate_illumination(point, light, shape, eye))
+            .sum()
+    }
+
+    pub fn render(&self, camera: &Camera, width: usize, height: usize) -> Canvas {
         let mut canvas = Canvas::new(width, height, self.background.clone());
-
         let mut progress_bar = ProgressBar::new("Rendering", width * height);
-        for (x, y) in iproduct!(0..width, 0..height) {
-            let ray = camera.ray(x, y);
-            let intersection = self.shapes.iter()
-                .flat_map(|shape| shape.intersect(ray).into_iter())
-                .filter(|&(_, position)| camera.sees(position))
-                .min_by(|a, b| closer_intersection(a, b, ray.o));
 
-            if let Some((shape, point)) = intersection {
-                let total_illumination = self.lights.iter()
-                    .filter(|light| {
-                        self.shapes.iter()
-                            .filter(|occluding_shape| occluding_shape.uuid() != shape.uuid())
-                            .all(|shape| !shape.occludes(light.center, point))
-                    })
-                    .map(|light| calculate_illumination(point, light, shape, camera.get_center()))
-                    .sum();
-
-                if let Some(pixel_color) = canvas.get_mut(x, y) {
-                    *pixel_color = shape.color_at(point).dim(total_illumination);
-                }
+        for (x, y, ray) in camera.rays(width, height) {
+            if let (Some(pixel), Some((shape, point))) = (canvas.get_mut(x, y), self.find_intersection(ray)) {
+                *pixel = shape.color_at(point)
+                    .dim(self.calculate_illumination(shape, point, camera.center()));
             }
             progress_bar.step().print();
         }

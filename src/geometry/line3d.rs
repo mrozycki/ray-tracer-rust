@@ -15,6 +15,10 @@ impl Line3d {
     pub fn at(&self, d: f64) -> Vector3d {
         self.o.add(self.l.scale(d))
     }
+
+    pub fn project(&self, v: Vector3d) -> f64 {
+        v.sub(self.o).dot(self.l)
+    }
 }
 
 impl fmt::Display for Line3d {
