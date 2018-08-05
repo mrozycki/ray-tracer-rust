@@ -2,7 +2,7 @@ use color::Color;
 use geometry::{Line3d, Vector3d};
 use uuid::Uuid;
 
-pub trait Shape {
+pub trait Shape : Send + Sync {
     fn intersect(&self, ray: Line3d) -> Vec<(&Shape, Vector3d)>;
     fn color_at(&self, position: Vector3d) -> Color;
     fn normal_at(&self, position: Vector3d) -> Vector3d;

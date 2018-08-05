@@ -1,10 +1,15 @@
 use std::io;
 use std::io::Write;
+use std::sync::{Arc, RwLock};
+
+struct State {
+    progress: usize,
+}
 
 pub struct ProgressBar {
     name: String,
     goal: usize,
-    progress: usize,
+    state: Arc<RwLock<State>>,
 }
 
 impl ProgressBar {
@@ -12,7 +17,7 @@ impl ProgressBar {
         Self {
             name: String::from(name),
             goal,
-            progress: 0,
+            state: Arc::new(RwLock::new(State { progress: 0 }))
         }
     }
 
@@ -24,15 +29,19 @@ impl ProgressBar {
         progress * 100 / self.goal
     }
 
-    pub fn step(&mut self) -> &mut Self {
-        self.progress += 1;
+    pub fn step(&self) -> &Self {
+        {
+            let mut state = self.state.write().unwrap();
+            state.progress += 1;
+        }
         self
     }
 
     pub fn print(&self) {
-        let percent_progress = self.percent(self.progress);
+        let progress = self.state.read().unwrap().progress;
+        let percent_progress = self.percent(progress);
 
-        if self.progress > 0 && self.percent(self.progress) > self.percent(self.progress - 1) {
+        if progress > 0 && self.percent(progress) > self.percent(progress - 1) {
             print!("\r{}: {}%", self.name, percent_progress);
             io::stdout().flush().expect("Failed to write");
         }

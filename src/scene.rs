@@ -4,6 +4,7 @@ use color::Color;
 use geometry::*;
 use light::Light;
 use progress_bar::ProgressBar;
+use rayon::prelude::*;
 use shapes::Shape;
 
 pub struct Scene {
@@ -74,16 +75,17 @@ impl Scene {
     }
 
     pub fn render(&self, camera: &Camera, width: usize, height: usize) -> Canvas {
-        let mut progress_bar = ProgressBar::new("Rendering", width * height);
-        let color_points = camera.rays(width, height).into_iter()
+        let progress_bar = ProgressBar::new("Rendering", width * height);
+        let color_points : Vec<_> = camera.rays(width, height).into_par_iter()
             .inspect(|_| progress_bar.step().print())
             .flat_map(|(x, y, ray)| self.cast(ray).map(|intersection| (x, y, intersection)))
-            .map(|(x, y, (shape, point))| (x, y, self.shape_color_at(shape, point, camera.center())));
+            .map(|(x, y, (shape, point))| (x, y, self.shape_color_at(shape, point, camera.center())))
+            .collect();
 
         let mut canvas = Canvas::new(width, height, self.background.clone());
-        for (x, y, color) in color_points {
-            if let Some(pixel) = canvas.get_mut(x, y) {
-                *pixel = color;
+        for (x, y, color) in &color_points {
+            if let Some(pixel) = canvas.get_mut(*x, *y) {
+                *pixel = color.clone();
             }
         }
 

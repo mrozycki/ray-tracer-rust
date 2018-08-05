@@ -24,7 +24,7 @@ impl Canvas {
     pub fn save_pbm(&self, out: &mut io::Write) -> io::Result<()> {
         try!(out.write_fmt(format_args!("P6 {} {} 255\n", self.width, self.height)));
 
-        let mut progress_bar = ProgressBar::new("Saving file", self.width * self.height);
+        let progress_bar = ProgressBar::new("Saving file", self.width * self.height);
         for color in &self.pixels {
             try!(out.write_all(&[color.r, color.g, color.b]));
             progress_bar.step().print();

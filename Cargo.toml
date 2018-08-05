@@ -7,6 +7,7 @@ authors = ["M. Rozycki <mar.rozycki@gmail.com>"]
 rand = "0.5.4"
 itertools = "0.7.8"
 uuid = { version = "0.6.5", features = ["v4"] }
+rayon = "1.0.2"
 
 [[bin]]
 name = "raytracer"

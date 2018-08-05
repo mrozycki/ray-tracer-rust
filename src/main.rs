@@ -2,6 +2,7 @@ extern crate core;
 extern crate rand;
 #[macro_use]
 extern crate itertools;
+extern crate rayon;
 extern crate uuid;
 
 mod camera;
@@ -28,7 +29,7 @@ fn main() {
         .add_shape(Box::new(CheckerBoard::new(0.0)));
 
     const NUMBER_OF_SPHERES: usize = 200;
-    let mut progress_bar = ProgressBar::new("Generating scene", NUMBER_OF_SPHERES);
+    let progress_bar = ProgressBar::new("Generating scene", NUMBER_OF_SPHERES);
     for _ in 0..NUMBER_OF_SPHERES {
         scene.add_shape(Box::new(Sphere::random()));
         progress_bar.step().print();
