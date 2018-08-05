@@ -52,12 +52,12 @@ impl Vector3d {
         self.add(other.scale(-1.0))
     }
 
-    pub fn distance(&self, other: Vector3d) -> f64 {
-        self.sub(other).norm()
-    }
-
     pub fn reflect(&self, normal: Vector3d) -> Vector3d {
         self.sub(normal.scale(2.0 * self.dot(normal)))
+    }
+
+    pub fn unit_to(self, point: Vector3d) -> Vector3d {
+        point.sub(self).unit()
     }
 
     pub fn x(&self) -> f64 {

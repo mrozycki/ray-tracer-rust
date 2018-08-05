@@ -29,7 +29,7 @@ impl ProgressBar {
         self
     }
 
-    pub fn print(&self) -> &Self {
+    pub fn print(&self) {
         let percent_progress = self.percent(self.progress);
 
         if self.progress > 0 && self.percent(self.progress) > self.percent(self.progress - 1) {
@@ -40,7 +40,5 @@ impl ProgressBar {
         if percent_progress == 100 {
             println!();
         }
-
-        self
     }
 }
