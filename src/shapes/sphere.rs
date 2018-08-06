@@ -52,6 +52,10 @@ impl Sphere {
 
         Sphere::new(Vector3d::new(x, y, radius), radius, Color::random())
     }
+
+    pub fn collides_with(&self, other: &Self) -> bool {
+        self.center.sub(other.center).norm() <= self.radius + other.radius
+    }
 }
 
 impl Shape for Sphere {

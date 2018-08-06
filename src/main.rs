@@ -30,9 +30,18 @@ fn main() {
 
     const NUMBER_OF_SPHERES: usize = 200;
     let progress_bar = ProgressBar::new("Generating scene", NUMBER_OF_SPHERES);
-    for _ in 0..NUMBER_OF_SPHERES {
-        scene.add_shape(Box::new(Sphere::random()));
+    let mut spheres = Vec::new();
+    while spheres.len() < NUMBER_OF_SPHERES {
+        let new_sphere = Sphere::random();
+        if spheres.iter().any(|sphere| new_sphere.collides_with(sphere)) {
+            continue;
+        }
+        spheres.push(new_sphere);
         progress_bar.step().print();
+    }
+
+    for sphere in spheres {
+        scene.add_shape(Box::new(sphere));
     }
 
     let camera = Camera::new(Vector3d::new(-5.0, 0.0, 2.0), Vector3d::new(1.0, 0.0, 0.0));
