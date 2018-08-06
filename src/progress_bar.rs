@@ -1,6 +1,7 @@
 use std::io;
 use std::io::Write;
 use std::sync::{Arc, RwLock};
+use std::time::SystemTime;
 
 struct State {
     progress: usize,
@@ -9,6 +10,7 @@ struct State {
 pub struct ProgressBar {
     name: String,
     goal: usize,
+    start_time: SystemTime,
     state: Arc<RwLock<State>>,
 }
 
@@ -17,6 +19,7 @@ impl ProgressBar {
         Self {
             name: String::from(name),
             goal,
+            start_time: SystemTime::now(),
             state: Arc::new(RwLock::new(State { progress: 0 }))
         }
     }
@@ -47,7 +50,9 @@ impl ProgressBar {
         }
 
         if percent_progress == 100 {
-            println!();
+            let time_taken = SystemTime::now().duration_since(self.start_time)
+                .expect("Time went backwards");
+            println!("\r{} completed. Took {:?}", self.name, time_taken);
         }
     }
 }
