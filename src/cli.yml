@@ -1,0 +1,23 @@
+name: raytracer
+version: "0.0.1"
+author: M. Rozycki <mar.rozycki@gmail.com>
+about: Simple ray tracer
+args:
+    - output:
+        short: o
+        long: output
+        value_name: FILE
+        help: Where to save your image.
+        takes_value: true
+    - width:
+        short: w
+        long: width
+        value_name: WIDTH
+        help: Width of the output file
+        takes_value: true
+    - height:
+        short: h
+        long: height
+        value_name: HEIGHT
+        help: Height of the output file. If omitted, same as width.
+        takes_value: true

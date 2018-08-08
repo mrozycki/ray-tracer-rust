@@ -1,3 +1,5 @@
+#[macro_use]
+extern crate clap;
 extern crate core;
 extern crate rand;
 #[macro_use]
@@ -15,6 +17,7 @@ mod scene;
 mod shapes;
 
 use camera::Camera;
+use clap::App;
 use geometry::Vector3d;
 use light::Light;
 use progress_bar::ProgressBar;
@@ -22,6 +25,9 @@ use scene::Scene;
 use shapes::{CheckerBoard, Sphere};
 
 fn main() {
+    let yaml = load_yaml!("cli.yml");
+    let matches = App::from_yaml(yaml).get_matches();
+
     let mut scene = Scene::new();
     scene
         .add_light(Light::new(Vector3d::new(-5.0, 5.0, 7.0), 1.0))
@@ -46,8 +52,15 @@ fn main() {
 
     let camera = Camera::new(Vector3d::new(-5.0, 0.0, 2.0), Vector3d::new(1.0, 0.0, 0.0));
 
-    let canvas = scene.render(&camera, 800, 480);
+    let canvas_width = matches.value_of("width")
+        .and_then(|w| w.parse::<usize>().ok())
+        .unwrap_or(800);
+    let canvas_height = matches.value_of("height")
+        .and_then(|h| h.parse::<usize>().ok())
+        .unwrap_or(canvas_width);
+    let canvas = scene.render(&camera, canvas_width, canvas_height);
 
-    let mut out_file = std::fs::File::create("out.ppm").expect("Failed to open file");
+    let filename = matches.value_of("output").unwrap_or("out.ppm");
+    let mut out_file = std::fs::File::create(filename).expect("Failed to open file");
     canvas.save_pbm(&mut out_file).expect("Failed to write to the file");
 }
