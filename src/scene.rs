@@ -50,7 +50,8 @@ impl Scene {
         self.lights.iter()
             .filter(|light| self.path_clear(point, radius, light.center))
             .map(|light| Self::illumination_from_light(shape, point, light, eye))
-            .sum()
+            .map(|illumination| illumination.powi(2))
+            .sum::<f64>().sqrt()
     }
 
     fn illumination_from_light(shape: &Shape, position: Vector3d, light: &Light, eye: Vector3d) -> f64 {
