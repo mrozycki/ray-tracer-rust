@@ -11,9 +11,11 @@ pub trait Shape : Send + Sync {
     fn diffuse_coefficient(&self) -> f64;
     fn specular_coefficient(&self) -> f64;
 
-    fn occludes(&self, a: Vector3d, b: Vector3d) -> bool {
-        self.intersect(Line3d::new(b.sub(a).unit(), a)).iter()
-            .filter(|&&(_, position)| position.sub(a).dot(position.sub(b)) < 0.0)
+    fn occludes(&self, a: Vector3d, b: Vector3d, radius: f64) -> bool {
+        self.intersect(Line3d::new(b.sub(a).unit(), a)).into_iter()
+            .filter(|&(_, position)| position.sub(a).norm() > radius)
+            .filter(|&(_, position)| position.sub(b).norm() > radius)
+            .filter(|&(_, position)| position.sub(a).dot(position.sub(b)) < 0.0)
             .count() > 0
     }
 
