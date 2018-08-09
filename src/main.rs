@@ -5,7 +5,6 @@ extern crate rand;
 #[macro_use]
 extern crate itertools;
 extern crate rayon;
-extern crate uuid;
 
 mod camera;
 mod canvas;

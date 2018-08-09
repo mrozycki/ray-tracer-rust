@@ -1,14 +1,12 @@
 use color::Color;
 use geometry::{Line3d, Vector3d};
 use shapes::Shape;
-use uuid::Uuid;
 
 pub struct CheckerBoard {
     height: f64,
     ambient: f64,
     diffuse: f64,
     specular: f64,
-    uuid: Uuid,
 }
 
 impl CheckerBoard {
@@ -18,7 +16,6 @@ impl CheckerBoard {
             ambient: 0.0,
             diffuse: 0.6,
             specular: 0.4,
-            uuid: Uuid::new_v4(),
         }
     }
 }
@@ -55,9 +52,5 @@ impl Shape for CheckerBoard {
 
     fn specular_coefficient(&self) -> f64 {
         self.specular
-    }
-
-    fn uuid(&self) -> Uuid {
-        self.uuid
     }
 }

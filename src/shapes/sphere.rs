@@ -3,7 +3,6 @@ use color::Color;
 use geometry::{Line3d, Vector3d};
 use rand::distributions::{Distribution, Uniform};
 use shapes::Shape;
-use uuid::Uuid;
 
 pub fn solve_quadratic(a: f64, b: f64, c: f64) -> Vec<f64> {
     let mut result = Vec::with_capacity(2);
@@ -23,7 +22,6 @@ pub struct Sphere {
     ambient: f64,
     diffuse: f64,
     specular: f64,
-    uuid: Uuid,
 }
 
 impl Sphere {
@@ -35,7 +33,6 @@ impl Sphere {
             ambient: 0.0,
             diffuse: 0.5,
             specular: 0.5,
-            uuid: Uuid::new_v4(),
         }
     }
 
@@ -87,9 +84,5 @@ impl Shape for Sphere {
 
     fn specular_coefficient(&self) -> f64 {
         self.specular
-    }
-
-    fn uuid(&self) -> Uuid {
-        self.uuid
     }
 }
