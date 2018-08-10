@@ -4,6 +4,7 @@ extern crate core;
 extern crate rand;
 #[macro_use]
 extern crate itertools;
+extern crate png;
 extern crate rayon;
 
 mod camera;
@@ -59,7 +60,6 @@ fn main() {
         .unwrap_or(canvas_width);
     let canvas = scene.render(&camera, canvas_width, canvas_height);
 
-    let filename = matches.value_of("output").unwrap_or("out.ppm");
-    let mut out_file = std::fs::File::create(filename).expect("Failed to open file");
-    canvas.save_pbm(&mut out_file).expect("Failed to write to the file");
+    let filename = matches.value_of("output").unwrap_or("out.png");
+    canvas.save_png(filename);
 }

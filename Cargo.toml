@@ -7,6 +7,7 @@ authors = ["M. Rozycki <mar.rozycki@gmail.com>"]
 clap = { version = "2.32.0", features = ["yaml"] }
 rand = "0.5.4"
 itertools = "0.7.8"
+png = "0.12.0"
 rayon = "1.0.2"
 
 [[bin]]

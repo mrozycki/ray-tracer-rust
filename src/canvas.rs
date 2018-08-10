@@ -1,5 +1,7 @@
 use color::Color;
+use png::{BitDepth, ColorType, Encoder, HasParameters};
 use progress_bar::ProgressBar;
+use std::fs;
 use std::io;
 use std::vec::Vec;
 
@@ -21,15 +23,20 @@ impl Canvas {
         self.pixels.get_mut(y * self.width + x)
     }
 
-    pub fn save_pbm(&self, out: &mut io::Write) -> io::Result<()> {
-        try!(out.write_fmt(format_args!("P6 {} {} 255\n", self.width, self.height)));
+    pub fn save_png(&self, filename: &str) {
+        let file = fs::File::create(filename).expect("Could not open file");
+        let ref mut w = io::BufWriter::new(file);
+        let mut encoder = Encoder::new(w, self.width as u32, self.height as u32);
+
+        encoder.set(ColorType::RGB).set(BitDepth::Eight);
+        let mut writer = encoder.write_header().unwrap();
 
         let progress_bar = ProgressBar::new("Saving file", self.width * self.height);
-        for color in &self.pixels {
-            try!(out.write_all(&[color.r, color.g, color.b]));
-            progress_bar.step().print();
-        }
+        let data: Vec<u8> = self.pixels.iter()
+            .inspect(|_| progress_bar.step().print())
+            .flat_map(|pixel| vec![pixel.r, pixel.g, pixel.b])
+            .collect();
 
-        Ok(())
+        writer.write_image_data(data.as_slice()).unwrap();
     }
 }
