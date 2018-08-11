@@ -22,6 +22,7 @@ pub struct Sphere {
     ambient: f64,
     diffuse: f64,
     specular: f64,
+    reflectiveness: f64,
 }
 
 impl Sphere {
@@ -33,6 +34,7 @@ impl Sphere {
             ambient: 0.0,
             diffuse: 0.5,
             specular: 0.5,
+            reflectiveness: 0.0,
         }
     }
 
@@ -84,5 +86,9 @@ impl Shape for Sphere {
 
     fn specular_coefficient(&self) -> f64 {
         self.specular
+    }
+
+    fn reflectiveness(&self) -> f64 {
+        self.reflectiveness
     }
 }

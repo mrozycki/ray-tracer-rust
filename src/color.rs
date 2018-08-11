@@ -50,4 +50,17 @@ impl Color {
             )
         }
     }
+
+    fn blend_component(a: u8, b: u8, ratio: f64) -> u8 {
+        ((a as f64).powi(2) + (b as f64).powi(2)*ratio).sqrt().min(255.0) as u8
+    }
+
+    pub fn blend(&self, other: &Color, ratio: f64) -> Color {
+        let ratio = ratio.max(0.0).min(1.0);
+        Color {
+            r: Self::blend_component(self.r, other.r, ratio),
+            g: Self::blend_component(self.g, other.g, ratio),
+            b: Self::blend_component(self.b, other.b, ratio),
+        }
+    }
 }

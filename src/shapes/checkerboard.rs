@@ -7,6 +7,7 @@ pub struct CheckerBoard {
     ambient: f64,
     diffuse: f64,
     specular: f64,
+    reflectiveness: f64,
 }
 
 impl CheckerBoard {
@@ -16,6 +17,7 @@ impl CheckerBoard {
             ambient: 0.0,
             diffuse: 0.6,
             specular: 0.4,
+            reflectiveness: 0.8,
         }
     }
 }
@@ -52,5 +54,9 @@ impl Shape for CheckerBoard {
 
     fn specular_coefficient(&self) -> f64 {
         self.specular
+    }
+
+    fn reflectiveness(&self) -> f64 {
+        self.reflectiveness
     }
 }

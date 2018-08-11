@@ -60,6 +60,10 @@ impl Vector3d {
         point.sub(self).unit()
     }
 
+    pub fn distance_to(self, point: Vector3d) -> f64 {
+        point.sub(self).norm()
+    }
+
     pub fn x(&self) -> f64 {
         self.x
     }
