@@ -13,6 +13,7 @@ mod color;
 mod geometry;
 mod light;
 mod progress_bar;
+mod render;
 mod scene;
 mod shapes;
 
@@ -21,6 +22,7 @@ use clap::App;
 use geometry::Vector3d;
 use light::Light;
 use progress_bar::ProgressBar;
+use render::Render;
 use scene::Scene;
 use shapes::{CheckerBoard, Sphere};
 
@@ -58,7 +60,7 @@ fn main() {
     let canvas_height = matches.value_of("height")
         .and_then(|h| h.parse::<usize>().ok())
         .unwrap_or(canvas_width);
-    let canvas = scene.render(&camera, canvas_width, canvas_height);
+    let canvas = Render::new(&scene, &camera, canvas_width, canvas_height).into_canvas();
 
     let filename = matches.value_of("output").unwrap_or("out.png");
     canvas.save_png(filename);
