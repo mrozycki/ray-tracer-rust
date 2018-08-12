@@ -1,33 +1,34 @@
-use geometry::Vector3d;
+use nalgebra::{Point3, Vector3, Unit};
+use geometry::utils::*;
 
 #[derive(Clone, Copy)]
 pub struct Line3d {
-    origin: Vector3d,
-    direction: Vector3d,
+    origin: Point3<f64>,
+    direction: Unit<Vector3<f64>>
 }
 
 impl Line3d {
-    pub fn new(origin: Vector3d, direction: Vector3d) -> Line3d {
-        Line3d { origin, direction: direction.unit() }
+    pub fn new(origin: Point3<f64>, direction: Unit<Vector3<f64>>) -> Line3d {
+        Line3d { origin, direction }
     }
 
-    pub fn between(a: Vector3d, b: Vector3d) -> Line3d {
-        Line3d { origin: a, direction: a.unit_to(b) }
+    pub fn between(a: &Point3<f64>, b: &Point3<f64>) -> Line3d {
+        Line3d { origin: a.clone(), direction: a.unit_to(b) }
     }
 
-    pub fn at(&self, d: f64) -> Vector3d {
-        self.origin.add(self.direction.scale(d))
+    pub fn at(&self, d: f64) -> Point3<f64> {
+        self.origin + self.direction.unwrap() * d
     }
 
-    pub fn project(&self, v: Vector3d) -> f64 {
-        v.sub(self.origin).dot(self.direction)
+    pub fn project(&self, p: Point3<f64>) -> f64 {
+        (p - self.origin).dot(&self.direction)
     }
 
-    pub fn origin(&self) -> Vector3d {
+    pub fn origin(&self) -> Point3<f64> {
         self.origin
     }
 
-    pub fn direction(&self) -> Vector3d {
-        self.direction
+    pub fn direction(&self) -> Vector3<f64> {
+        self.direction.unwrap()
     }
 }

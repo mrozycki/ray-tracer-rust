@@ -1,12 +1,12 @@
-use geometry::Vector3d;
+use nalgebra::Point3;
 
 pub struct Light {
-    pub center: Vector3d,
+    pub center: Point3<f64>,
     pub intensity: f64,
 }
 
 impl Light {
-    pub fn new(center: Vector3d, intensity: f64) -> Self {
+    pub fn new(center: Point3<f64>, intensity: f64) -> Self {
         Light { center, intensity }
     }
 }

@@ -1,5 +1,6 @@
 use color::Color;
-use geometry::{Line3d, Vector3d};
+use geometry::Line3d;
+use nalgebra::{Point3, Vector3, Unit};
 use shapes::Shape;
 
 pub struct CheckerBoard {
@@ -23,25 +24,25 @@ impl CheckerBoard {
 }
 
 impl Shape for CheckerBoard {
-    fn intersect(&self, ray: Line3d) -> Vec<(&Shape, Vector3d)> {
-        if ray.direction().z() == 0.0 {
+    fn intersect(&self, ray: &Line3d) -> Vec<(&Shape, Point3<f64>)> {
+        if ray.direction().z == 0.0 {
             return Vec::new();
         }
 
-        let d = (self.height - ray.origin().z()) / ray.direction().z();
+        let d = (self.height - ray.origin().z) / ray.direction().z;
         vec![(self as &Shape, ray.at(d))]
     }
 
-    fn color_at(&self, position: Vector3d) -> Color {
-        if ((position.x().floor() + position.y().floor()).abs() as i64) % 2 == 1 {
+    fn color_at(&self, position: &Point3<f64>) -> Color {
+        if ((position.x.floor() + position.y.floor()).abs() as i64) % 2 == 1 {
             Color::gray(100)
         } else {
             Color::gray(128)
         }
     }
 
-    fn normal_at(&self, _: Vector3d) -> Vector3d {
-        Vector3d::new(0.0, 0.0, 1.0)
+    fn normal_at(&self, _: &Point3<f64>) -> Unit<Vector3<f64>> {
+        Vector3::z_axis()
     }
 
     fn ambient_light(&self) -> f64 {

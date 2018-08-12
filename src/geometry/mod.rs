@@ -1,5 +1,4 @@
-pub use self::vector3d::Vector3d;
 pub use self::line3d::Line3d;
 
-mod vector3d;
+pub mod utils;
 mod line3d;

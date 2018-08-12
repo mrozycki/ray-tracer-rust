@@ -4,6 +4,7 @@ extern crate core;
 extern crate rand;
 #[macro_use]
 extern crate itertools;
+extern crate nalgebra;
 extern crate png;
 extern crate rayon;
 
@@ -19,8 +20,8 @@ mod shapes;
 
 use camera::Camera;
 use clap::App;
-use geometry::Vector3d;
 use light::Light;
+use nalgebra::{Point3, Vector3};
 use progress_bar::ProgressBar;
 use render::Render;
 use scene::Scene;
@@ -32,8 +33,8 @@ fn main() {
 
     let mut scene = Scene::new();
     scene
-        .add_light(Light::new(Vector3d::new(-5.0, 5.0, 7.0), 1.0))
-        .add_light(Light::new(Vector3d::new(-5.0, -5.0, 3.0), 0.8))
+        .add_light(Light::new(Point3::new(-5.0, 5.0, 7.0), 1.0))
+        .add_light(Light::new(Point3::new(-5.0, -5.0, 3.0), 0.8))
         .add_shape(Box::new(CheckerBoard::new(0.0)));
 
     const NUMBER_OF_SPHERES: usize = 200;
@@ -52,7 +53,7 @@ fn main() {
         scene.add_shape(Box::new(sphere));
     }
 
-    let camera = Camera::new(Vector3d::new(-5.0, 0.0, 2.0), Vector3d::new(1.0, 0.0, 0.0));
+    let camera = Camera::new(Point3::new(-5.0, 0.0, 2.0), Vector3::new(1.0, 0.0, 0.0));
 
     let canvas_width = matches.value_of("width")
         .and_then(|w| w.parse::<usize>().ok())
