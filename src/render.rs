@@ -54,7 +54,7 @@ impl<'a> Render<'a> {
         self.scene.shapes().iter()
             .flat_map(|shape| shape.intersect(ray))
             .filter(|&(_, position)| ray.project(position) > 0.0)
-            .filter(|&(_, position)| position.distance_to(ray.o) > self.pixel_radius)
+            .filter(|&(_, position)| position.distance_to(ray.origin()) > self.pixel_radius)
             .min_by(|&(_, a), &(_, b)| ray.project(a).partial_cmp(&ray.project(b)).unwrap())
     }
 

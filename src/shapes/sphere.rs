@@ -60,8 +60,8 @@ impl Sphere {
 impl Shape for Sphere {
     fn intersect(&self, ray: Line3d) -> Vec<(&Shape, Vector3d)> {
         let a = 1.0;
-        let b = 2.0 * ray.l.dot(ray.o.sub(self.center));
-        let c = ray.o.sub(self.center).norm().powi(2) - self.radius.powi(2);
+        let b = 2.0 * ray.direction().dot(ray.origin().sub(self.center));
+        let c = ray.origin().distance_to(self.center).powi(2) - self.radius.powi(2);
 
         solve_quadratic(a, b, c).into_iter()
             .map(|d| (self as &Shape, ray.at(d)))

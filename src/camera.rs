@@ -37,7 +37,7 @@ impl Camera {
                 .add(pixel_right.scale(x as f64 + 0.5))
                 .add(pixel_down.scale(y as f64 + 0.5));
 
-            rays.push((x, y, Line3d::new(pixel_center.sub(self.center), pixel_center)));
+            rays.push((x, y, Line3d::new(pixel_center, self.center.unit_to(pixel_center))));
         }
 
         rays

@@ -24,11 +24,11 @@ impl CheckerBoard {
 
 impl Shape for CheckerBoard {
     fn intersect(&self, ray: Line3d) -> Vec<(&Shape, Vector3d)> {
-        if ray.l.z() == 0.0 {
+        if ray.direction().z() == 0.0 {
             return Vec::new();
         }
 
-        let d = (self.height - ray.o.z()) / ray.l.z();
+        let d = (self.height - ray.origin().z()) / ray.direction().z();
         vec![(self as &Shape, ray.at(d))]
     }
 
