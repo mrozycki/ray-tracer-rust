@@ -21,7 +21,7 @@ mod shapes;
 use camera::Camera;
 use clap::App;
 use light::Light;
-use nalgebra::{Point3, Vector3};
+use nalgebra::Point3;
 use progress_bar::ProgressBar;
 use render::Render;
 use scene::Scene;
@@ -53,7 +53,8 @@ fn main() {
         scene.add_shape(Box::new(sphere));
     }
 
-    let camera = Camera::new(Point3::new(-5.0, 0.0, 2.0), Vector3::new(1.0, 0.0, 0.0));
+    let mut camera = Camera::new(Point3::new(-5.0, 0.0, 2.0));
+    camera.rotate(1.0, 0.0, 0.0);
 
     let canvas_width = matches.value_of("width")
         .and_then(|w| w.parse::<usize>().ok())
@@ -61,8 +62,8 @@ fn main() {
     let canvas_height = matches.value_of("height")
         .and_then(|h| h.parse::<usize>().ok())
         .unwrap_or(canvas_width);
-    let canvas = Render::new(&scene, &camera, canvas_width, canvas_height).into_canvas();
+    let filename = matches.value_of("output").unwrap_or("frames");
 
-    let filename = matches.value_of("output").unwrap_or("out.png");
+    let canvas = Render::new(&scene, &camera, canvas_width, canvas_height).into_canvas();
     canvas.save_png(filename);
 }

@@ -43,8 +43,8 @@ impl Sphere {
         let mut rng = rand::thread_rng();
         let radius_range = Uniform::new(0.1, 0.5);
         let radius = radius_range.sample(&mut rng);
-        let position_range_x = Uniform::new(-2.0, 30.0);
-        let position_range_y = Uniform::new(-10.0, 10.0);
+        let position_range_x = Uniform::new(-30.0, 30.0);
+        let position_range_y = Uniform::new(-30.0, 30.0);
         let (x, y) = (
             position_range_x.sample(&mut rng),
             position_range_y.sample(&mut rng),
