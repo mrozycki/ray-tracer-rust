@@ -19,6 +19,10 @@ impl Canvas {
         Canvas { width, height, pixels }
     }
 
+    pub fn get(&self, x: usize, y: usize) -> Option<&Color> {
+        self.pixels.get(y * self.width + x)
+    }
+
     pub fn get_mut(&mut self, x: usize, y: usize) -> Option<&mut Color> {
         self.pixels.get_mut(y * self.width + x)
     }
@@ -38,5 +42,36 @@ impl Canvas {
             .collect();
 
         writer.write_image_data(data.as_slice()).unwrap();
+    }
+
+    pub fn downsample(self, factor: usize) -> Self {
+        let new_width = self.width / factor;
+        let new_height = self.height / factor;
+        println!("New width: {}, new height: {}", new_width, new_height);
+        let mut downsampled = Self::new(new_width, new_height, Color::gray(0));
+
+        for (out_x, out_y) in iproduct!(0..new_width, 0..new_height) {
+            let mut r = 0.0;
+            let mut g = 0.0;
+            let mut b = 0.0;
+
+            for (in_x, in_y) in iproduct!(0..factor, 0..factor) {
+                if let Some(color) = self.get(out_x * factor + in_x, out_y * factor + in_y) {
+                    r += (color.r as f64).powi(2);
+                    g += (color.g as f64).powi(2);
+                    b += (color.b as f64).powi(2);
+                }
+            }
+
+            if let Some(pixel) = downsampled.get_mut(out_x, out_y) {
+                *pixel = Color {
+                    r: (r / (factor as f64).powi(2)).sqrt() as u8,
+                    g: (g / (factor as f64).powi(2)).sqrt() as u8,
+                    b: (b / (factor as f64).powi(2)).sqrt() as u8,
+                };
+            }
+        }
+
+        downsampled
     }
 }

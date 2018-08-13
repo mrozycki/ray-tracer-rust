@@ -72,6 +72,7 @@ impl<'a> Render<'a> {
             .map(|light| Self::illumination_from_light(shape, point, light, eye))
             .map(|illumination| illumination.powi(2))
             .sum::<f64>().sqrt()
+            + shape.ambient_light()
     }
 
     fn path_clear(&self, point_on_shape: &Point3<f64>, other_point: &Point3<f64>) -> bool {
@@ -92,7 +93,7 @@ impl<'a> Render<'a> {
             * shape.specular_coefficient()
             * light.intensity;
 
-        diffuse + specular + shape.ambient_light()
+        diffuse + specular
     }
 
     pub fn into_canvas(self) -> Canvas {

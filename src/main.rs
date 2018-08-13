@@ -20,6 +20,7 @@ mod shapes;
 
 use camera::Camera;
 use clap::App;
+use color::Color;
 use light::Light;
 use nalgebra::Point3;
 use progress_bar::ProgressBar;
@@ -31,7 +32,7 @@ fn main() {
     let yaml = load_yaml!("cli.yml");
     let matches = App::from_yaml(yaml).get_matches();
 
-    let mut scene = Scene::new();
+    let mut scene = Scene::new(Color::gray(0));
     scene
         .add_light(Light::new(Point3::new(-5.0, 5.0, 7.0), 1.0))
         .add_light(Light::new(Point3::new(-5.0, -5.0, 3.0), 0.8))
@@ -56,14 +57,19 @@ fn main() {
     let mut camera = Camera::new(Point3::new(-5.0, 0.0, 2.0));
     camera.rotate(1.0, 0.0, 0.0);
 
+    let antialias = matches.value_of("antialias")
+        .and_then(|a| a.parse::<usize>().ok())
+        .unwrap_or(1);
     let canvas_width = matches.value_of("width")
         .and_then(|w| w.parse::<usize>().ok())
         .unwrap_or(800);
     let canvas_height = matches.value_of("height")
         .and_then(|h| h.parse::<usize>().ok())
         .unwrap_or(canvas_width);
-    let filename = matches.value_of("output").unwrap_or("frames");
+    let filename = matches.value_of("output").unwrap_or("out.png");
 
-    let canvas = Render::new(&scene, &camera, canvas_width, canvas_height).into_canvas();
+    let canvas = Render::new(&scene, &camera, canvas_width * antialias, canvas_height * antialias)
+        .into_canvas()
+        .downsample(antialias);
     canvas.save_png(filename);
 }

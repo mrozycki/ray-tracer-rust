@@ -9,11 +9,11 @@ pub struct Scene {
 }
 
 impl Scene {
-    pub fn new() -> Self {
+    pub fn new(background: Color) -> Self {
         Scene {
             lights: Vec::new(),
             shapes: Vec::new(),
-            background: Color::gray(0),
+            background,
         }
     }
 

@@ -21,3 +21,9 @@ args:
         value_name: HEIGHT
         help: Height of the output file. If omitted, same as width.
         takes_value: true
+    - antialias:
+        short: a
+        long: antialias
+        value_name: FACTOR
+        help: Anti-aliasing factor.
+        takes_value: true
