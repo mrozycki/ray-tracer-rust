@@ -47,7 +47,6 @@ impl Canvas {
     pub fn downsample(self, factor: usize) -> Self {
         let new_width = self.width / factor;
         let new_height = self.height / factor;
-        println!("New width: {}, new height: {}", new_width, new_height);
         let mut downsampled = Self::new(new_width, new_height, Color::gray(0));
 
         for (out_x, out_y) in iproduct!(0..new_width, 0..new_height) {

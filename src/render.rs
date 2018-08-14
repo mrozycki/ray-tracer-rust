@@ -98,7 +98,7 @@ impl<'a> Render<'a> {
 
     pub fn into_canvas(self) -> Canvas {
         let progress_bar = ProgressBar::new("Rendering", self.width * self.height);
-        let color_points : Vec<_> = self.camera.rays(self.width, self.height).into_par_iter()
+        let color_points : Vec<_> = self.camera.rays(self.width, self.height)
             .inspect(|_| progress_bar.step().print())
             .map(|(x, y, ray)| (x, y, self.cast(&ray, 8)))
             .collect();
