@@ -2,7 +2,6 @@ extern crate rand;
 use color::Color;
 use geometry::{Line3d, utils::*};
 use nalgebra::{Point3, Vector3, Unit};
-use rand::distributions::{Distribution, Uniform};
 use shapes::Shape;
 
 pub fn solve_quadratic(a: f64, b: f64, c: f64) -> Vec<f64> {
@@ -37,20 +36,6 @@ impl Sphere {
             specular: 0.5,
             reflectiveness: 0.0,
         }
-    }
-
-    pub fn random() -> Self {
-        let mut rng = rand::thread_rng();
-        let radius_range = Uniform::new(0.1, 0.5);
-        let radius = radius_range.sample(&mut rng);
-        let position_range_x = Uniform::new(-30.0, 30.0);
-        let position_range_y = Uniform::new(-30.0, 30.0);
-        let (x, y) = (
-            position_range_x.sample(&mut rng),
-            position_range_y.sample(&mut rng),
-        );
-
-        Sphere::new(Point3::new(x, y, radius), radius, Color::random())
     }
 
     pub fn collides_with(&self, other: &Self) -> bool {

@@ -16,43 +16,18 @@ mod light;
 mod progress_bar;
 mod render;
 mod scene;
+mod scene_generator;
 mod shapes;
 
 use camera::Camera;
 use clap::App;
-use color::Color;
-use light::Light;
 use nalgebra::Point3;
-use progress_bar::ProgressBar;
 use render::Render;
-use scene::Scene;
-use shapes::{CheckerBoard, Sphere};
 
 fn main() {
     let yaml = load_yaml!("cli.yml");
     let matches = App::from_yaml(yaml).get_matches();
-
-    let mut scene = Scene::new(Color::gray(0));
-    scene
-        .add_light(Light::new(Point3::new(-5.0, 5.0, 7.0), 1.0))
-        .add_light(Light::new(Point3::new(-5.0, -5.0, 3.0), 0.8))
-        .add_shape(Box::new(CheckerBoard::new(0.0)));
-
-    const NUMBER_OF_SPHERES: usize = 200;
-    let progress_bar = ProgressBar::new("Generating scene", NUMBER_OF_SPHERES);
-    let mut spheres = Vec::new();
-    while spheres.len() < NUMBER_OF_SPHERES {
-        let new_sphere = Sphere::random();
-        if spheres.iter().any(|sphere| new_sphere.collides_with(sphere)) {
-            continue;
-        }
-        spheres.push(new_sphere);
-        progress_bar.step().print();
-    }
-
-    for sphere in spheres {
-        scene.add_shape(Box::new(sphere));
-    }
+    let scene = scene_generator::spheres_demo(200);
 
     let mut camera = Camera::new(Point3::new(-5.0, 0.0, 2.0));
     camera.rotate(1.0, 0.0, 0.0);
