@@ -14,6 +14,7 @@ mod canvas;
 mod color;
 mod geometry;
 mod light;
+mod math;
 mod progress_bar;
 mod render;
 mod scene;

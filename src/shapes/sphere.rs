@@ -1,19 +1,9 @@
 extern crate rand;
 use color::Color;
 use geometry::{Line3d, utils::*};
+use math::Polynomial;
 use nalgebra::{Point3, Vector3, Unit};
 use shapes::Shape;
-
-pub fn solve_quadratic(a: f64, b: f64, c: f64) -> Vec<f64> {
-    let mut result = Vec::with_capacity(2);
-    let delta = b * b - 4.0 * a * c;
-    if delta >= 0f64 {
-        result.push((-b - delta.sqrt()) / (2.0 * a));
-        result.push((-b + delta.sqrt()) / (2.0 * a));
-    }
-
-    result
-}
 
 pub struct Sphere {
     color: Color,
@@ -49,7 +39,9 @@ impl Shape for Sphere {
         let b = 2.0 * ray.direction().dot(&(ray.origin() - self.center));
         let c = ray.origin().distance_to(&self.center).powi(2) - self.radius.powi(2);
 
-        solve_quadratic(a, b, c).into_iter()
+        Polynomial::new(vec!(c, b, a))
+            .into_solutions()
+            .into_iter()
             .map(|d| (self as &Shape, ray.at(d)))
             .collect()
     }
