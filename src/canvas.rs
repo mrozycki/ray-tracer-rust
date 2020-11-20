@@ -1,5 +1,5 @@
 use color::Color;
-use png::{BitDepth, ColorType, Encoder, HasParameters};
+use png::{BitDepth, ColorType, Encoder};
 use progress_bar::ProgressBar;
 use std::fs;
 use std::io;
@@ -32,7 +32,8 @@ impl Canvas {
         let ref mut w = io::BufWriter::new(file);
         let mut encoder = Encoder::new(w, self.width as u32, self.height as u32);
 
-        encoder.set(ColorType::RGB).set(BitDepth::Eight);
+        encoder.set_color(ColorType::RGB);
+        encoder.set_depth(BitDepth::Eight);
         let mut writer = encoder.write_header().unwrap();
 
         let progress_bar = ProgressBar::new("Saving file", self.width * self.height);
