@@ -4,7 +4,7 @@ use shapes::Shape;
 
 pub struct Scene {
     lights: Vec<Light>,
-    shapes: Vec<Box<Shape>>,
+    shapes: Vec<Box<dyn Shape>>,
     background: Color,
 }
 
@@ -17,7 +17,7 @@ impl Scene {
         }
     }
 
-    pub fn add_shape(&mut self, shape: Box<Shape>) -> &mut Self {
+    pub fn add_shape(&mut self, shape: Box<dyn Shape>) -> &mut Self {
         self.shapes.push(shape);
         self
     }
@@ -27,7 +27,7 @@ impl Scene {
         self
     }
 
-    pub fn shapes(&self) -> &Vec<Box<Shape>> {
+    pub fn shapes(&self) -> &Vec<Box<dyn Shape>> {
         &self.shapes
     }
 

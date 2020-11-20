@@ -52,7 +52,7 @@ impl<'a> Render<'a> {
         color.blend(&deep_color, 0.5)
     }
 
-    fn nearest_intersection(&self, ray: &Line3d) -> Option<(&Shape, Point3<f64>)> {
+    fn nearest_intersection(&self, ray: &Line3d) -> Option<(&dyn Shape, Point3<f64>)> {
         self.scene.shapes().iter()
             .flat_map(|shape| shape.intersect(ray))
             .filter(|&(_, position)| ray.project(position) > 0.0)
@@ -60,13 +60,13 @@ impl<'a> Render<'a> {
             .min_by(|&(_, a), &(_, b)| ray.project(a).partial_cmp(&ray.project(b)).unwrap())
     }
 
-    fn color_at(&self, shape: &Shape, point: &Point3<f64>, eye: &Point3<f64>) -> Color {
+    fn color_at(&self, shape: &dyn Shape, point: &Point3<f64>, eye: &Point3<f64>) -> Color {
         shape
             .color_at(point)
             .dim(self.illumination_at(shape, point, eye))
     }
 
-    fn illumination_at(&self, shape: &Shape, point: &Point3<f64>, eye: &Point3<f64>) -> f64 {
+    fn illumination_at(&self, shape: &dyn Shape, point: &Point3<f64>, eye: &Point3<f64>) -> f64 {
         self.scene.lights().iter()
             .filter(|light| self.path_clear(point, &light.center))
             .map(|light| Self::illumination_from_light(shape, point, light, eye))
@@ -81,7 +81,7 @@ impl<'a> Render<'a> {
             .peekable().peek().is_none()
     }
 
-    fn illumination_from_light(shape: &Shape, position: &Point3<f64>, light: &Light, eye: &Point3<f64>) -> f64 {
+    fn illumination_from_light(shape: &dyn Shape, position: &Point3<f64>, light: &Light, eye: &Point3<f64>) -> f64 {
         let normal = shape.normal_at(position);
 
         let unit_to_light = position.unit_to(&light.center);

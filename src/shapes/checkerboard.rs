@@ -24,13 +24,13 @@ impl CheckerBoard {
 }
 
 impl Shape for CheckerBoard {
-    fn intersect(&self, ray: &Line3d) -> Vec<(&Shape, Point3<f64>)> {
+    fn intersect(&self, ray: &Line3d) -> Vec<(&dyn Shape, Point3<f64>)> {
         if ray.direction().z == 0.0 {
             return Vec::new();
         }
 
         let d = (self.height - ray.origin().z) / ray.direction().z;
-        vec![(self as &Shape, ray.at(d))]
+        vec![(self as &dyn Shape, ray.at(d))]
     }
 
     fn color_at(&self, position: &Point3<f64>) -> Color {

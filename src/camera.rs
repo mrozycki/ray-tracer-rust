@@ -19,8 +19,8 @@ impl Camera {
 
     pub fn rotate(&mut self, roll: f64, pitch: f64, yaw: f64) {
         let rotation = Rotation3::from_euler_angles(roll, pitch, yaw);
-        self.direction = Unit::new_normalize(rotation * self.direction.unwrap());
-        self.up = Unit::new_normalize(rotation * self.up.unwrap());
+        self.direction = Unit::new_normalize(rotation * self.direction.into_inner());
+        self.up = Unit::new_normalize(rotation * self.up.into_inner());
     }
 
     pub fn center(&self) -> &Point3<f64> {
@@ -33,11 +33,11 @@ impl Camera {
 
         let camera_center = self.center; // Can be moved into map's closure.
         let canvas_corner = camera_center
-            + self.direction.unwrap()
-            + 0.5 * self.up.unwrap()
+            + self.direction.into_inner()
+            + 0.5 * self.up.into_inner()
             + (aspect_ratio / 2.0) * left_unit;
         let pixel_right = left_unit * (-aspect_ratio / (width as f64));
-        let pixel_down = self.up.unwrap() * (-1.0 / (height as f64));
+        let pixel_down = self.up.into_inner() * (-1.0 / (height as f64));
 
         (0..width).into_par_iter()
             .flat_map(move |x| (0..height).into_par_iter().map(move |y| (x, y)))

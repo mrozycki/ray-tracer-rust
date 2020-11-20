@@ -3,7 +3,7 @@ use geometry::{Line3d, utils::*};
 use nalgebra::{Point3, Vector3, Unit};
 
 pub trait Shape : Send + Sync {
-    fn intersect(&self, ray: &Line3d) -> Vec<(&Shape, Point3<f64>)>;
+    fn intersect(&self, ray: &Line3d) -> Vec<(&dyn Shape, Point3<f64>)>;
     fn color_at(&self, position: &Point3<f64>) -> Color;
     fn normal_at(&self, position: &Point3<f64>) -> Unit<Vector3<f64>>;
 

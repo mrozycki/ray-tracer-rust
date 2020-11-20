@@ -34,7 +34,7 @@ impl Sphere {
 }
 
 impl Shape for Sphere {
-    fn intersect(&self, ray: &Line3d) -> Vec<(&Shape, Point3<f64>)> {
+    fn intersect(&self, ray: &Line3d) -> Vec<(&dyn Shape, Point3<f64>)> {
         let a = 1.0;
         let b = 2.0 * ray.direction().dot(&(ray.origin() - self.center));
         let c = ray.origin().distance_to(&self.center).powi(2) - self.radius.powi(2);
@@ -42,7 +42,7 @@ impl Shape for Sphere {
         Polynomial::new(vec!(c, b, a))
             .into_solutions()
             .into_iter()
-            .map(|d| (self as &Shape, ray.at(d)))
+            .map(|d| (self as &dyn Shape, ray.at(d)))
             .collect()
     }
 

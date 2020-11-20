@@ -17,7 +17,7 @@ impl Line3d {
     }
 
     pub fn at(&self, d: f64) -> Point3<f64> {
-        self.origin + self.direction.unwrap() * d
+        self.origin + self.direction.into_inner() * d
     }
 
     pub fn project(&self, p: Point3<f64>) -> f64 {
@@ -29,6 +29,6 @@ impl Line3d {
     }
 
     pub fn direction(&self) -> Vector3<f64> {
-        self.direction.unwrap()
+        self.direction.into_inner()
     }
 }

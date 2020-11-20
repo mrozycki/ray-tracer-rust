@@ -1,5 +1,5 @@
 [project]
-name = "Ray Tracer"
+name = "RayTracer"
 version = "0.0.1"
 authors = ["M. Rozycki <mar.rozycki@gmail.com>"]
 
