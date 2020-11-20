@@ -3,16 +3,13 @@ use color::Color;
 use geometry::{Line3d, utils::*};
 use math::Polynomial;
 use nalgebra::{Point3, Vector3, Unit};
-use shapes::Shape;
+use shapes::{Shape, Material};
 
 pub struct Sphere {
     color: Color,
     center: Point3<f64>,
     radius: f64,
-    ambient: f64,
-    diffuse: f64,
-    specular: f64,
-    reflectiveness: f64,
+    material: Material,
 }
 
 impl Sphere {
@@ -21,10 +18,14 @@ impl Sphere {
             color,
             center,
             radius,
-            ambient: 0.0,
-            diffuse: 0.5,
-            specular: 0.5,
-            reflectiveness: 0.0,
+            material: Material {
+                ambient_light: 0.0,
+                diffuse_coefficient: 0.5,
+                specular_coefficient: 0.5,
+                reflectiveness: 0.0,
+                transparency: 0.0,
+                refractive_index: 1.0,
+            }
         }
     }
 
@@ -54,19 +55,7 @@ impl Shape for Sphere {
         Unit::new_normalize(position - self.center)
     }
 
-    fn ambient_light(&self) -> f64 {
-        self.ambient
-    }
-
-    fn diffuse_coefficient(&self) -> f64 {
-        self.diffuse
-    }
-
-    fn specular_coefficient(&self) -> f64 {
-        self.specular
-    }
-
-    fn reflectiveness(&self) -> f64 {
-        self.reflectiveness
+    fn material(&self) -> &Material {
+        &self.material
     }
 }

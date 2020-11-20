@@ -1,24 +1,25 @@
 use color::Color;
 use geometry::Line3d;
 use nalgebra::{Point3, Vector3, Unit};
-use shapes::Shape;
+use shapes::{Material, Shape};
 
 pub struct CheckerBoard {
     height: f64,
-    ambient: f64,
-    diffuse: f64,
-    specular: f64,
-    reflectiveness: f64,
+    material: Material,
 }
 
 impl CheckerBoard {
     pub fn new(height: f64) -> Self {
         CheckerBoard {
             height,
-            ambient: 0.0,
-            diffuse: 0.6,
-            specular: 0.4,
-            reflectiveness: 0.8,
+            material: Material {
+                ambient_light: 0.0,
+                diffuse_coefficient: 0.6,
+                specular_coefficient: 0.4,
+                reflectiveness: 0.8,
+                transparency: 0.0,
+                refractive_index: 1.0,
+            }
         }
     }
 }
@@ -45,19 +46,7 @@ impl Shape for CheckerBoard {
         Vector3::z_axis()
     }
 
-    fn ambient_light(&self) -> f64 {
-        self.ambient
-    }
-
-    fn diffuse_coefficient(&self) -> f64 {
-        self.diffuse
-    }
-
-    fn specular_coefficient(&self) -> f64 {
-        self.specular
-    }
-
-    fn reflectiveness(&self) -> f64 {
-        self.reflectiveness
+    fn material(&self) -> &Material {
+        &self.material
     }
 }

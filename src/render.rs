@@ -43,7 +43,7 @@ impl<'a> Render<'a> {
         let (shape, point) = nearest_intersection.unwrap();
         let color = self.color_at(shape, &point, self.camera.center());
 
-        if depth == 1 || shape.reflectiveness() <= 0.0 {
+        if depth == 1 || shape.material().reflectiveness <= 0.0 {
             return color;
         }
 
@@ -72,7 +72,7 @@ impl<'a> Render<'a> {
             .map(|light| Self::illumination_from_light(shape, point, light, eye))
             .map(|illumination| illumination.powi(2))
             .sum::<f64>().sqrt()
-            + shape.ambient_light()
+            + shape.material().ambient_light
     }
 
     fn path_clear(&self, point_on_shape: &Point3<f64>, other_point: &Point3<f64>) -> bool {
@@ -85,12 +85,12 @@ impl<'a> Render<'a> {
         let normal = shape.normal_at(position);
 
         let unit_to_light = position.unit_to(&light.center);
-        let diffuse = normal.dot(&unit_to_light) * shape.diffuse_coefficient() * light.intensity;
+        let diffuse = normal.dot(&unit_to_light) * shape.material().diffuse_coefficient * light.intensity;
 
         let unit_to_eye = position.unit_to(eye);
         let reflection = unit_to_light.reflect(&normal);
         let specular = -reflection.dot(&unit_to_eye).min(0.0).powi(5)
-            * shape.specular_coefficient()
+            * shape.material().specular_coefficient
             * light.intensity;
 
         diffuse + specular
