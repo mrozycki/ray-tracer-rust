@@ -1,9 +1,11 @@
-use color::Color;
-use png::{BitDepth, ColorType, Encoder};
-use progress_bar::ProgressBar;
 use std::fs;
 use std::io;
 use std::vec::Vec;
+
+use crate::color::Color;
+use crate::progress_bar::ProgressBar;
+
+use png::{BitDepth, ColorType, Encoder};
 
 pub struct Canvas {
     width: usize,
@@ -16,7 +18,11 @@ impl Canvas {
         let mut pixels = Vec::with_capacity(width * height);
         pixels.resize(width * height, color);
 
-        Canvas { width, height, pixels }
+        Canvas {
+            width,
+            height,
+            pixels,
+        }
     }
 
     pub fn get(&self, x: usize, y: usize) -> Option<&Color> {
@@ -37,7 +43,9 @@ impl Canvas {
         let mut writer = encoder.write_header().unwrap();
 
         let progress_bar = ProgressBar::new("Saving file", self.width * self.height);
-        let data: Vec<u8> = self.pixels.iter()
+        let data: Vec<u8> = self
+            .pixels
+            .iter()
             .inspect(|_| progress_bar.step().print())
             .flat_map(|pixel| vec![pixel.r, pixel.g, pixel.b])
             .collect();

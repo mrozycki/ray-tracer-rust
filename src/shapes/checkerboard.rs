@@ -1,7 +1,8 @@
-use color::Color;
-use geometry::Line3d;
-use nalgebra::{Point3, Vector3, Unit};
-use shapes::{Material, Shape};
+use crate::color::Color;
+use crate::geometry::Line3d;
+use crate::shapes::{Material, Shape};
+
+use nalgebra::{Point3, Unit, Vector3};
 
 pub struct CheckerBoard {
     height: f64,
@@ -19,7 +20,7 @@ impl CheckerBoard {
                 reflectiveness: 0.8,
                 transparency: 0.0,
                 refractive_index: 1.0,
-            }
+            },
         }
     }
 }

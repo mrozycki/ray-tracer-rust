@@ -1,12 +1,7 @@
 #[macro_use]
 extern crate clap;
-extern crate core;
-extern crate rand;
 #[macro_use]
 extern crate itertools;
-extern crate nalgebra;
-extern crate png;
-extern crate rayon;
 
 mod args;
 mod camera;

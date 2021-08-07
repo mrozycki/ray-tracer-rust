@@ -1,5 +1,6 @@
-use geometry::{Line3d, utils::*};
-use nalgebra::{Point3, Rotation3, Vector3, Unit};
+use crate::geometry::{utils::*, Line3d};
+
+use nalgebra::{Point3, Rotation3, Unit, Vector3};
 use rayon::prelude::*;
 
 pub struct Camera {
@@ -13,7 +14,7 @@ impl Camera {
         Camera {
             center,
             direction: Vector3::x_axis(),
-            up: Vector3::z_axis()
+            up: Vector3::z_axis(),
         }
     }
 
@@ -27,7 +28,11 @@ impl Camera {
         &self.center
     }
 
-    pub fn rays(&self, width: usize, height: usize) -> impl ParallelIterator<Item = (usize, usize, Line3d)> {
+    pub fn rays(
+        &self,
+        width: usize,
+        height: usize,
+    ) -> impl ParallelIterator<Item = (usize, usize, Line3d)> {
         let left_unit = self.up.cross(&self.direction);
         let aspect_ratio = (width as f64) / (height as f64);
 
@@ -39,14 +44,18 @@ impl Camera {
         let pixel_right = left_unit * (-aspect_ratio / (width as f64));
         let pixel_down = self.up.into_inner() * (-1.0 / (height as f64));
 
-        (0..width).into_par_iter()
+        (0..width)
+            .into_par_iter()
             .flat_map(move |x| (0..height).into_par_iter().map(move |y| (x, y)))
             .map(move |(x, y)| {
-                let pixel_center = canvas_corner
-                    + pixel_right * (x as f64 + 0.5)
-                    + pixel_down * (y as f64 + 0.5);
+                let pixel_center =
+                    canvas_corner + pixel_right * (x as f64 + 0.5) + pixel_down * (y as f64 + 0.5);
 
-                (x, y, Line3d::new(pixel_center, camera_center.unit_to(&pixel_center)))
+                (
+                    x,
+                    y,
+                    Line3d::new(pixel_center, camera_center.unit_to(&pixel_center)),
+                )
             })
     }
 }

@@ -1,15 +1,16 @@
-use camera::Camera;
-use canvas::Canvas;
-use color::Color;
-use geometry::utils::*;
-use geometry::Line3d;
-use light::Light;
-use nalgebra::Point3;
-use progress_bar::ProgressBar;
-use rayon::prelude::*;
-use scene::Scene;
-use shapes::Shape;
 use std::cmp;
+
+use crate::camera::Camera;
+use crate::canvas::Canvas;
+use crate::color::Color;
+use crate::geometry::{utils::*, Line3d};
+use crate::light::Light;
+use crate::progress_bar::ProgressBar;
+use crate::scene::Scene;
+use crate::shapes::Shape;
+
+use nalgebra::Point3;
+use rayon::prelude::*;
 
 pub struct Render<'a> {
     scene: &'a Scene,
@@ -53,7 +54,9 @@ impl<'a> Render<'a> {
     }
 
     fn nearest_intersection(&self, ray: &Line3d) -> Option<(&dyn Shape, Point3<f64>)> {
-        self.scene.shapes().iter()
+        self.scene
+            .shapes()
+            .iter()
             .flat_map(|shape| shape.intersect(ray))
             .filter(|&(_, position)| ray.project(position) > 0.0)
             .filter(|&(_, position)| position.distance_to(&ray.origin()) > self.pixel_radius)
@@ -67,25 +70,38 @@ impl<'a> Render<'a> {
     }
 
     fn illumination_at(&self, shape: &dyn Shape, point: &Point3<f64>, eye: &Point3<f64>) -> f64 {
-        self.scene.lights().iter()
+        self.scene
+            .lights()
+            .iter()
             .filter(|light| self.path_clear(point, &light.center))
             .map(|light| Self::illumination_from_light(shape, point, light, eye))
             .map(|illumination| illumination.powi(2))
-            .sum::<f64>().sqrt()
+            .sum::<f64>()
+            .sqrt()
             + shape.material().ambient_light
     }
 
     fn path_clear(&self, point_on_shape: &Point3<f64>, other_point: &Point3<f64>) -> bool {
-        self.scene.shapes().iter()
+        self.scene
+            .shapes()
+            .iter()
             .filter(|obstacle| obstacle.occludes(point_on_shape, other_point, self.pixel_radius))
-            .peekable().peek().is_none()
+            .peekable()
+            .peek()
+            .is_none()
     }
 
-    fn illumination_from_light(shape: &dyn Shape, position: &Point3<f64>, light: &Light, eye: &Point3<f64>) -> f64 {
+    fn illumination_from_light(
+        shape: &dyn Shape,
+        position: &Point3<f64>,
+        light: &Light,
+        eye: &Point3<f64>,
+    ) -> f64 {
         let normal = shape.normal_at(position);
 
         let unit_to_light = position.unit_to(&light.center);
-        let diffuse = normal.dot(&unit_to_light) * shape.material().diffuse_coefficient * light.intensity;
+        let diffuse =
+            normal.dot(&unit_to_light) * shape.material().diffuse_coefficient * light.intensity;
 
         let unit_to_eye = position.unit_to(eye);
         let reflection = unit_to_light.reflect(&normal);
@@ -98,7 +114,9 @@ impl<'a> Render<'a> {
 
     pub fn into_canvas(self) -> Canvas {
         let progress_bar = ProgressBar::new("Rendering", self.width * self.height);
-        let color_points : Vec<_> = self.camera.rays(self.width, self.height)
+        let color_points: Vec<_> = self
+            .camera
+            .rays(self.width, self.height)
             .inspect(|_| progress_bar.step().print())
             .map(|(x, y, ray)| (x, y, self.cast(&ray, 8)))
             .collect();

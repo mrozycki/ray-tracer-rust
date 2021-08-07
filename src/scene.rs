@@ -1,6 +1,6 @@
-use color::Color;
-use light::Light;
-use shapes::Shape;
+use crate::color::Color;
+use crate::light::Light;
+use crate::shapes::Shape;
 
 pub struct Scene {
     lights: Vec<Light>,

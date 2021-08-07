@@ -1,11 +1,12 @@
-use color::Color;
-use light::Light;
+use crate::color::Color;
+use crate::light::Light;
+use crate::progress_bar::ProgressBar;
+use crate::scene::Scene;
+use crate::shapes::{CheckerBoard, Sphere};
+
 use nalgebra::Point3;
-use progress_bar::ProgressBar;
-use rand::thread_rng;
 use rand::distributions::{Distribution, Uniform};
-use scene::Scene;
-use shapes::{CheckerBoard, Sphere};
+use rand::thread_rng;
 
 pub fn random_sphere() -> Sphere {
     let mut rng = thread_rng();
@@ -32,7 +33,10 @@ pub fn spheres_demo(number_of_spheres: usize) -> Scene {
     let mut spheres = Vec::new();
     while spheres.len() < number_of_spheres {
         let new_sphere = random_sphere();
-        if spheres.iter().any(|sphere| new_sphere.collides_with(sphere)) {
+        if spheres
+            .iter()
+            .any(|sphere| new_sphere.collides_with(sphere))
+        {
             continue;
         }
         spheres.push(new_sphere);
